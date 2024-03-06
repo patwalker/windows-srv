@@ -1,0 +1,181 @@
+Ebben a laborgyakorlatban megismerdsz a Windows Server Hyper-V szolgáltatásaival.
+
+Labor megoldásához szükséges idő: 45 perc
+
+Labor scenario:
+
+Fusimisi Technologies egy globális mérnöki és gyártó vállalat, melynek központja Budapesten, Magyarországon található.
+
+Az IT iroda és adatközpont is Budapesten helyezkedik el, hogy támogassa a budapesti telephelyet és a többi helyszínt.
+
+Fusimisi Technologies nemrégiben telepített egy Windows Server szerver- és kliensinfrastruktúrát.
+
+Tekintettel arra, hogy számos fizikai szerver jelenleg alulhasznált a Fusimisi Technologies-nál, 
+a vállalat tervezi a virtualizáció bővítését a környezet optimalizálása érdekében. 
+
+Ennek eredményeképpen úgy döntesz, hogy egy koncepcióigazolást (proof of concept, PoC) hajtasz végre annak értékelésére,
+hogyan lehet a Hyper-V-t használni a virtuális gépek környezetének kezelésére.
+
+A csapatoddal együtt tervezitek kiértékelni a Windows Server virtuális gépeket, 
+és megfontolni azok használatát különböző alkalmazások és szolgáltatások hosztolására.
+
+1. feladat Hyper-V szerepkör telepítése
+
+    1. Lépés
+    
+        Jelentkezz be a labor gépedre RDP-n keresztül.
+
+        Kattints a start menüre és keresd meg az mstsc.exe alkalmazást, majd indítsd el.
+
+        A számítógép (Computer) mezőbe írd be a virtuális géped IP címét, majd add meg a hitelesítéshez szükséges felhasználónevet és jelszót.
+
+        Sikeres belépést követően nyisd meg a "Lemezkezelést" (diskmgmt.msc) a Start menü keresőjében.
+
+        Keresd meg a második, jelenleg offline állapotban lévő lemezt, kattints rá jobb gombbal,
+        és válaszd az "Online állapotba helyezés" (Bring Online) opciót.
+
+    2. Lépés:
+
+        Lemez Formázása és Meghajtó Betűjelének Beállítása
+
+        Ha a lemez még nincs inicializálva, jobb klikk az offline lemezen, és válaszd az "Inicializálás" (Initialize Disk) opciót. Általában az alapértelmezett beállítások (pl. GPT) megfelelőek.
+
+        Jobb klikk az újonnan online állapotba helyezett lemezen, és válaszd a "Új egyszerű kötet" (New Simple Volume) lehetőséget. Kövesd a varázsló utasításait.
+
+        A varázslóban állítsd be a meghajtó betűjelét "E"-re, és adj neki egy címkét, például "DATA".
+
+    3. Lépés: 
+
+        Mappák Létrehozása az E Meghajtón
+
+        Nyisd meg a Fájlkezelőt (File Explorer), navigálj az "E:" meghajtóhoz, és hozz létre egy új mappát "Hyper-V" néven.
+
+        A "Hyper-V" mappán belül hozz létre két további mappát: "Hyper-V Virtual Machines" és "Hyper-V Virtual Machine Configuration".
+
+    4. Lépés: 
+
+        Hyper-V Szerepkör Telepítése
+
+        Nyisd meg a Szerverkezelőt (Server Manager), és kattints a "Szerepkörök és szolgáltatások hozzáadása" (Add Roles and Features) lehetőségre.
+
+        A varázslón belül kövesd az utasításokat, amíg el nem érsz a "Szerepkörök kiválasztása" (Select server roles) lépéshez.
+        Itt jelöld be a "Hyper-V" opciót.
+
+        A telepítés során, amikor a rendszer megkérdezi, hol helyezze el a virtuális gépeket és a konfigurációs fájlokat,
+        navigálj az előző lépésben létrehozott "Hyper-V Virtual Machines" és "Hyper-V Virtual Machine Configuration" mappákhoz,
+        és állítsd be őket a megfelelő helyeknek.
+
+        Folytasd a varázsló utasításainak követését, és fejezd be a Hyper-V telepítését. Indítsd újra a szervert, ha szükséges.
+
+2. feladat Nested virtualizáció konfigurálása
+
+    1. Lépés: A Gép Hosztnevének Lekérdezése
+
+        Nyisd meg a Start menüt és keress rá a Powershell-re, majd kattints a jobb egérgombbal
+        a Powershell alkalmazásra és válaszd a futtatás rendszergazdaként opciót.
+        
+        A gép hosztnevének lekérdezéséhez futtasd a következő parancsot:
+
+        Get-ComputerInfo | Select-Object CsName vagy hostname
+
+        Ezek a parancsok visszaadják a gép hosztnevét, amit felhasználhatsz a további konfiguráció során.
+
+    2. Lépés: Nested Virtualizáció Bekapcsolása
+
+        Miután megvan a hosztgép neve, a nested virtualizáció bekapcsolásához használd a következő parancsot,
+        cseréld le a "VMNév" részt a nested virtualizációt engedélyezni kívánt VM nevére:
+
+        Set-VMProcessor -VMName "VMNév" -ExposeVirtualizationExtensions $true
+
+        Ez a parancs engedélyezi a virtualizációs kiterjesztéseket a megadott VM-ben, lehetővé téve egy másik VM futtatását belül.
+
+    3. Lépés: NAT Alapú Hálózat Létrehozása
+
+        A NAT hálózat lehetővé teszi a VM-ek számára, hogy egy privát hálózaton keresztül osszák meg a host gép IP-címét.
+
+        NAT Switch Létrehozása
+
+        Először hozz létre egy virtuális switchet, ami a NAT hálózati forgalom kezelésére szolgál:
+
+        New-VMSwitch -Name "NATSwitch" -SwitchType Internal
+
+        Kérdezd le az újonnan létrehozott switch interface indexét, és állíts be rajta IP-címet:
+
+        $interfaceIndex = (Get-NetAdapter -Name "vEthernet (NATSwitch)").ifIndex
+
+        New-NetIPAddress -IPAddress 192.168.0.1 -PrefixLength 24 -InterfaceIndex $interfaceIndex
+
+        Itt 192.168.0.1 az az IP-cím, amit a NAT gatewayként használsz, és 24 a hálózati maszk hossza (azaz /24).
+
+        Végül hozz létre egy NAT szabályt, amely összeköti a virtuális hálózatot az internettel:
+
+        New-NetNat -Name "NATNetwork" -InternalIPInterfaceAddressPrefix 192.168.0.0/24
+
+3. feladat Új virtuális gép létrehozása
+
+    1. Lépés: Hyper-V Manager Megnyitása
+
+        Nyisd meg a Hyper-V Manager alkalmazást. 
+        
+        Ezt megteheted az start menü keresőjében a "Hyper-V Manager" begépelésével és kiválasztásával.
+
+    2. Lépés: Új Virtuális Gép Varázsló Indítása
+
+        A Hyper-V Manager bal oldali paneljén kattints jobb gombbal a Hyper-V szerver nevére, és válaszd az "Új" > "Virtuális Gép" lehetőséget a menüből.
+
+    3. Lépés: A Varázsló Első Lépése
+
+        A "Before You Begin" ablakban kattints a "Next" gombra.
+
+        Adj meg egy nevet a virtuális gépnek, például "DC1", és válaszd ki a tárolási helyét. Kattints a "Next" gombra.
+
+    4. Lépés: Generáció Kiválasztása
+
+        Válaszd a "Generation 1" opciót, majd kattints a "Next" gombra.
+
+    5. Lépés: Memória Konfigurálása
+
+        Adj meg 4096 MB RAM-ot a "Startup memory" mezőben, és győződj meg róla,
+        hogy a "Use Dynamic Memory for this virtual machine" opció nincs bejelölve.
+        
+        Kattints a "Next" gombra.
+
+    6. Lépés: Hálózati Konfiguráció
+
+        A "Configure Networking" ablakban válaszd ki a "NATSwitch" opciót a legördülő menüből a korábban létrehozott virtuális switchhez való csatlakozáshoz. Kattints a "Next" gombra.
+
+    7. Lépés: Virtuális Merevlemez Konfigurálása
+
+        A "Connect Virtual Hard Disk" ablakban válaszd az "Create a virtual hard disk" opciót.
+        
+        Adj meg egy nevet, helyet a virtuális merevlemez számára, és állítsd a méretét 32 GB-ra.
+        
+        Kattints a "Next" gombra.
+
+    8. Lépés: Telepítési Lehetőségek
+
+        A "Installation Options" szakaszban válaszd a "Install an operating system from a bootable CD/DVD-ROM" lehetőséget.
+
+        Válaszd ki az "Image file (.iso)" opciót, majd böngészd ki és válaszd ki az ISO fájlt,
+        amit az operációs rendszer telepítéséhez szeretnél használni.
+        
+        Ezt megtalálhatod a "C:\Users[FelhasználóNév]\Downloads" mappában.
+
+        Kattints a "Browse" gombra az ISO fájl kiválasztásához.
+
+        Miután kiválasztottad az ISO fájlt, kattints a "Next" gombra.
+
+    9. Lépés: A Varázsló Befejezése
+
+        Ellenőrizd a megadott konfigurációkat a "Summary" oldalon, hogy minden megfelelő-e.
+
+        Ha minden rendben van, kattints a "Finish" gombra.
+        
+        A Hyper-V most létrehozza a "DC1" nevű virtuális gépet a megadott specifikációk alapján.
+
+    10. Lépés: Virtuális Gép Indítása
+
+        A Hyper-V Managerben, a létrehozott "DC1" virtuális gépre kattintva jobb gombbal, válaszd a "Start" opciót a virtuális gép elindításához.
+
+        Ezután kattints jobb gombbal újra a VM-re, és válaszd a "Connect" opciót, hogy megnyisd a VM konzolt, 
+        ahol követheted az operációs rendszer telepítési folyamatát.
