@@ -1,0 +1,85 @@
+Ebben a laborgyakorlatban megismerdsz az Active Directory Domain Services alapvető szolgáltatásaival.
+
+Labor megoldásához szükséges idő: 45 perc
+
+Labor scenario:
+
+A Fusimisi Technologies, egy budapesti központú globális mérnöki és gyártó vállalat, eddig nem használt központi identitáskezelési megoldást.
+
+Annak érdekében, hogy hatékonyabban kezeljék a felhasználói azonosítókat és hozzáférés-kezelést, úgy döntöttek,
+hogy bevezetik az Active Directory Domain Services (AD DS) szolgáltatást. 
+
+Te mint a szerverekért felelős szakértő, a te feladatod lesz az AD DS telepítése és konfigurálása a Fusimisi Technologies infrastruktúrájában.
+
+1. feladat Az Active Directory Domain Services Szerepkör Telepítése
+
+    1. lépés
+    
+        Szerverkezelő indítása: Nyisd meg a Szerverkezelőt (Server Manager) a Windows Serveren.
+
+        Szerepkörök és szolgáltatások hozzáadása: Kattints a "Szerepkörök és szolgáltatások hozzáadása" (Add Roles and Features) lehetőségre.
+
+        Telepítési típus: Válaszd a "Szerepkör-alapú vagy funkcióalapú telepítés" (Role-based or feature-based installation) opciót.
+
+        Célszerver kiválasztása: Válaszd ki azt a szervert vagy virtuális hardvert, amelyre az AD DS-t telepíteni szeretnéd.
+
+        Szerepkörök kiválasztása: Jelöld be az "Active Directory Domain Services" lehetőséget. A rendszer felajánlhatja a szükséges funkciók telepítését – fogadd el ezeket.
+
+        Telepítés: Ellenőrizd a kiválasztott beállításokat, és kattints a "Telepítés" (Install) gombra. Várj, amíg a telepítés befejeződik.
+
+    2. lépés
+
+        Promóció domain controllerre: A telepítés után a Szerverkezelőben kattints a sárga figyelmeztető jelre,
+        és válaszd a "Promote this server to a domain controller" lehetőséget.
+
+        Új erdő létrehozása: Ha még nincs AD DS környezeted, válaszd az "Add a new forest" opciót és adj meg egy domain nevet (pl. fusimisi.local).
+
+        Domain Controller beállítások: Állítsd be a DSRM (Directory Services Restore Mode) jelszót,
+        ami a domain controller biztonsági módjához szükséges.
+
+        DNS és NETBIOS beállítások: A rendszer automatikusan javasol DNS és NETBIOS neveket, ezeket általában elfogadhatod.
+
+        Konfiguráció ellenőrzése és telepítés: Ellenőrizd a beállításokat, és ha minden rendben van, kattints a "Telepítés" (Install) gombra.
+        A szerver újraindul a folyamat során.
+
+    3. lépés
+
+        DOMAINNÉV-BUD OU Létrehozása
+
+        Nyisd meg az "Active Directory Users and Computers" (ADUC) eszközt.
+
+        Kattints jobb gombbal a domainre (pl. fusimisi.local), és válaszd a "New" > "Organizational Unit" opciót.
+
+        Adj nevet az OU-nak, pl. "FUSIMISI-BUD", és ellenőrizd a "Protect container from accidental deletion" opciót. Kattints az "OK" gombra.
+
+        Sub-OU-k Létrehozása a FUSIMISI-BUD alatt
+
+        Ismételd meg a fenti lépéseket a "Computers", "Groups", és "Users" sub-OU-k létrehozásához a "FUSIMISI-BUD" OU-n belül.
+
+        DOMAINNÉV-GYOR OU Létrehozása
+
+        Kövesd az első lépést, de az OU neve legyen "FUSIMISI-GYOR".
+
+        Sub-OU-k Létrehozása a FUSIMISI-GYOR alatt
+
+        Ismételd meg a fenti lépéseket a "Computers", "Groups", és "Users" sub-OU-k létrehozásához a "FUSIMISI-GYOR" OU-n belül.
+
+        Felhasználói Fiók Létrehozása
+
+        Kattints jobb gombbal a "Users" sub-OU-ra a "FUSIMISI-BUD" vagy "FUSIMISI-GYOR" alatt, attól függően, hol szeretnéd létrehozni a felhasználót.
+
+        Válaszd a "New" > "User" opciót.
+
+        Töltsd ki a felhasználó adatait, adj meg egy kezdeti jelszót, és jelöld be a "User must change password at next logon" opciót.
+
+        Kattints az "Next", majd az "Finish" gombra.
+
+        Csoport Létrehozása
+
+        Kattints jobb gombbal a "Groups" sub-OU-ra a "FUSIMISI-BUD" OU-n belül.
+
+        Válaszd a "New" > "Group" opciót.
+
+        Adj nevet a csoportnak, pl. "BUD-engineers", és állítsd be a csoport típusát és hatókörét (általában "Global" és "Security").
+
+        Kattints az "OK" gombra a csoport létrehozásának befejezéséhez.
