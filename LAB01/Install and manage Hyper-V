@@ -1,4 +1,4 @@
-Ebben a laborgyakorlatban megismerdsz a Windows Server Hyper-V szolgáltatásaival.
+Ebben a laborgyakorlatban megismerkedsz a Windows Server Hyper-V szolgáltatásaival.
 
 Labor megoldásához szükséges idő: 60 perc
 
@@ -38,9 +38,11 @@ A csapatoddal együtt tervezitek kiértékelni a Windows Server virtuális gépe
 
         Lemez Formázása és Meghajtó Betűjelének Beállítása
 
-        Ha a lemez még nincs inicializálva, jobb klikk az offline lemezen, és válaszd az "Inicializálás" (Initialize Disk) opciót. Általában az alapértelmezett beállítások (pl. GPT) megfelelőek.
+        Ha a lemez még nincs inicializálva, jobb klikk az offline lemezen, és válaszd az "Inicializálás" (Initialize Disk) opciót.
+        Általában az alapértelmezett beállítások (pl. GPT) megfelelőek.
 
-        Jobb klikk az újonnan online állapotba helyezett lemezen, és válaszd a "Új egyszerű kötet" (New Simple Volume) lehetőséget. Kövesd a varázsló utasításait.
+        Jobb klikk az újonnan online állapotba helyezett lemezen, és válaszd a "Új egyszerű kötet" (New Simple Volume) lehetőséget. 
+        Kövesd a varázsló utasításait.
 
         A varázslóban állítsd be a meghajtó betűjelét "E"-re, és adj neki egy címkét, például "DATA".
 
