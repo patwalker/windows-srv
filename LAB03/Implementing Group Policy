@@ -1,0 +1,76 @@
+Ebben a laborgyakorlatban megismerkedsz az Active Directory Domain Services alapvető szolgáltatásaival.
+
+Labor megoldásához szükséges idő: 45 perc
+
+Labor scenario:
+
+A Fusimisi Technologies egy gyorsan növekvő globális mérnöki és gyártó vállalat, melynek központja Budapesten található.
+
+A vállalat kiemelt figyelmet fordít az információs technológiai infrastruktúra biztonságára és hatékonyságára. 
+
+Ebben az összefüggésben a vállalat IT osztálya felismerte a céges eszközök konfigurációjának
+és biztonsági beállításainak központi menedzselésének szükségességét.
+
+Jelszó Biztonsági Irányelvek GPO Létrehozása és Alkalmazása
+
+    1. Lépés: GPO Létrehozása
+
+        Nyisd meg az "Active Directory Users and Computers" (ADUC) eszközt.
+
+        Kattints a domain nevére (pl. fusimisi.local), keresd meg és kattints jobb gombbal a "Computers" OU-ra.
+
+        Válaszd a "Create a GPO in this domain, and Link it here..." opciót.
+
+        Adj nevet az új GPO-nak, például "Password Policy GPO".
+
+    2. Lépés: Jelszó Biztonsági Beállítások Konfigurálása
+
+        Nyisd meg a Group Policy Management Console-t (GPMC).
+
+        Bontsd ki a domain struktúrát, navigálj a "Computers" OU-hoz, kattints rá a létrehozott "Password Policy GPO"-ra.
+
+        Kattints jobb gombbal a GPO-ra és válaszd a "Edit" lehetőséget.
+
+        A Group Policy Management Editor-ben navigálj a Computer Configuration -> Policies -> Windows Settings -> Security Settings -> Account Policies -> Password Policy útvonalon.
+            
+            Itt állítsd be a következőket:
+
+                Enforce password history: 24 passwords remembered
+                Maximum password age: 60 days
+                Minimum password age: 1 day
+                Minimum password length: 8 characters
+                Password must meet complexity requirements: Enabled
+
+    3. Lépés: A GPO Alkalmazása
+
+        Mivel a GPO-t már hozzárendeltük a "Computers" OU-hoz a létrehozáskor,
+        automatikusan alkalmazva lesz az OU-ban található összes számítógépre.
+
+    Képernyővédő Beállítások GPO Létrehozása és Alkalmazása
+
+    1. Lépés: GPO Létrehozása
+
+        Ismételd meg az első lépéseket, de ezúttal a "Users" OU-val.
+
+        Adj nevet az új GPO-nak, például "Screensaver Policy GPO".
+
+    2. Lépés: Képernyővédő Beállítások Konfigurálása
+
+        Nyisd meg a Group Policy Management Console-t (GPMC).
+
+        Bontsd ki a domain struktúrát, navigálj a "Users" OU-hoz, kattints rá a létrehozott "Screensaver Policy GPO"-ra.
+
+        Kattints jobb gombbal a GPO-ra és válaszd a "Edit" lehetőséget.
+
+        A Group Policy Management Editor-ben navigálj a User Configuration -> Administrative Templates -> Control Panel -> Personalization útvonalon.
+        
+            Itt állítsd be a következőket:
+
+                Enable screen saver: Enabled
+                Password protect the screen saver: Enabled
+                Screen saver timeout: 900 seconds (15 minutes)
+                Force specific screen saver: (adj meg egy elérési utat, pl. C:\Windows\System32\ssmarquee.scr)
+
+    3. Lépés: A GPO Alkalmazása
+
+        Mivel a GPO-t már hozzárendeltük a "Users" OU-hoz a létrehozáskor, automatikusan alkalmazva lesz az OU-ban található összes felhasználóra.
