@@ -1,0 +1,159 @@
+Ebben a laborgyakorlatban megismerkedsz a Windows szerver hálózati infrastruktúra szolgáltatásaival, mint például a DHCP-vel és a DNS-sel.
+
+Labor megoldásához szükséges idő: 45 perc
+
+Labor scenario:
+
+A Fusimisi Technologies Kft. egy nagy vállalat, melynek összetett igényei vannak a hálózati szolgáltatások területén.
+
+Ezeknek az igényeknek a kielégítése érdekében telepíteni és konfigurálni fogod a DHCP-t úgy, hogy az magas rendelkezésre állású legyen,
+ezzel biztosítva a szolgáltatás elérhetőségét. Emellett DNS-t is beállítasz úgy, hogy a Trey Research – a Fusimisi Technologies Kft. 
+egyik részlege – rendelkezzen saját DNS szerverrel a tesztelési területen.
+
+1. feladat DHCP Szerver Role Telepítése Grafikus Felhasználói Felületen (GUI)
+
+    1. lépés
+
+        Szerverkezelő Megnyitása
+
+        Nyisd meg a Szerverkezelőt (Server Manager) az első szerveren, amelyen grafikus felhasználói felület (GUI) áll rendelkezésre.
+
+        Szerepkörök és Szolgáltatások Hozzáadása
+
+        A Szerverkezelő kezdőlapján kattints a "Szerepkörök és szolgáltatások hozzáadása" (Add Roles and Features) gombra.
+
+        Telepítési Típus
+
+        A Telepítési Típus lépésnél válaszd a "Szerepkör-alapú vagy funkcióalapú telepítés" (Role-based or feature-based installation) opciót.
+
+        Célszerver Kiválasztása
+
+        Válaszd ki azt a szervert, ahol telepíteni szeretnéd a DHCP szerepkört.
+
+        Szerepkörök Kiválasztása
+
+        A Szerepkör kiválasztása lépésnél jelöld be a "DHCP Server" lehetőséget. A rendszer felajánlja, hogy telepítsd a szükséges funkciókat; fogadd el, és folytasd tovább.
+
+        Telepítés
+
+        Befejezés előtt ellenőrizd a telepítési beállításokat, majd kattints a "Telepítés" (Install) gombra. Várj, amíg a telepítés befejeződik.
+
+    2. lépés DHCP Scope Létrehozása:
+
+        DHCP Konzol Megnyitása
+
+        A telepítés befejezése után nyisd meg a DHCP konzolt a Szerverkezelőből (Server Manager > Tools > DHCP).
+
+        Új Scope Létrehozása
+
+        A DHCP szerveren belül kattints jobb gombbal a "Scopes" mappára, és válaszd az "Új Scope" (New Scope) opciót.
+        
+        Indítsd el a New Scope Varázslót.
+
+        Scope Beállításai
+
+        Kövesd a varázsló lépéseit az új scope létrehozásához. 
+        
+        Adj nevet a scope-nak és konfiguráld az alábbiak szerint:
+
+            IP cím tartomány: Válaszd ki azokat az IP címeket, amiket a DHCP szerver osztani fog.
+            Például: 192.168.1.1-től 192.168.1.254-ig.
+
+            Kizárt IP címek: Adhatsz meg egy tartományt, amit kizársz a DHCP által kiosztott IP címek közül.
+            Például: 192.168.1.1-től 192.168.1.50-ig, hogy 50 db IP címet kihagyj.
+
+            Bérleti Idő: Állítsd a bérleti időt 1 napra (24 órára).
+
+            Konfiguráld a DHCP beállításait, beleértve az alapértelmezett átjárót (default gateway),
+            ami például lehet 192.168.1.1, és a DNS szerverek címeit.
+
+        Scope Aktiválása
+
+        A varázsló befejezésekor aktiváld a scope-ot, hogy a DHCP szerver elkezdhesse az IP címek kiosztását.
+
+2. feladat DHCP Szerver Role Telepítése és Scope Létrehozása PowerShell Használatával (Nincs GUI)
+
+    1. lépés
+
+        Telepítés Lépései:
+
+        PowerShell Megnyitása
+        
+        Nyisd meg a PowerShellt adminisztrátorként.
+
+        DHCP Szerepkör Telepítése
+
+        Írd be és futtasd a következő parancsot:
+
+        Install-WindowsFeature DHCP -IncludeManagementTools
+
+    2. lépés 
+    
+        DHCP Scope Létrehozása:
+
+        DHCP Szerver Post-Install Konfigurációja
+
+        Futtasd a dhcp post-install parancsot a PowerShellben, hogy befejezd a DHCP szerver konfigurálását.
+
+        DHCP Scope Létrehozása
+
+        Használd a következő PowerShell parancsokat a DHCP scope beállításához az előző lépéseknek megfelelően:
+
+            Add-DhcpServerv4Scope -Name "PrimaryScope" -StartRange 192.168.1.51 -EndRange 192.168.1.254 -SubnetMask 255.255.255.0 -State Active
+
+            Add-DhcpServerv4ExclusionRange -ScopeId 192.168.1.0 -StartRange 192.168.1.1 -EndRange 192.168.1.50
+        
+            Set-DhcpServerv4OptionValue -DnsServer 192.168.1.100 -Router 192.168.1.1 -ScopeId 192.168.1.0
+
+        Itt a StartRange és EndRange határozza meg a kiosztható IP címek tartományát, az ExclusionRange adja meg a kizárt címeket,
+        a DnsServer az DNS szerver címét, a Router pedig az alapértelmezett átjáró címét.
+
+        Bérleti Idő Beállítása
+
+        Állítsd be a bérleti időt 1 napra:
+
+            Set-DhcpServerv4Scope -ScopeId 192.168.1.0 -LeaseDuration 1.00:00:00
+
+3. feladat Failover Kapcsolat Létrehozása
+
+    1. lépés (GUI)
+
+        DHCP Konzol Megnyitása
+
+        Nyisd meg a DHCP konzolt a Server Manager > Tools menüből.
+
+        Scope Kiválasztása
+
+        A DHCP konzolon belül bontsd ki a szervert, válaszd ki azokat a scope-okat, amikhez failover kapcsolatot szeretnél létrehozni.
+
+    2. lépés (GUI)
+    
+        Failover Konfigurálása
+
+        Kattints jobb gombbal a kiválasztott scope-ra, és válaszd a Configure Failover lehetőséget.
+
+        A megjelenő varázslóban válaszd ki a scope-okat, amikhez failover kapcsolatot szeretnél beállítani, majd kattints a Next gombra.
+
+        Adja meg a partnerek DHCP szerverének nevét vagy IP-címét, és állíts be egy megosztási mód (pl. 50/50 vagy 80/20).
+
+        Állíts be egy nevet a failover kapcsolatnak, és add meg a készenléti beállításokat,
+        mint például a maximális ügyfélszolgálati idő (Maximum Client Lead Time - MCLT), 
+        állapotlekérdezési időköz és az automatikus állapotváltás beállításait.
+        
+        Kattints a Finish gombra a beállítások mentéséhez és a failover kapcsolat aktiválásához.
+
+    VAGY
+
+    1. lépés (Powershell)
+
+        Nyisd meg a PowerShellt rendszergazdai jogosultságokkal.
+
+        Failover Kapcsolat Létrehozása
+
+        Használja a Add-DhcpServerv4Failover cmdlet-et a failover kapcsolat létrehozásához. Példa:
+
+        Add-DhcpServerv4Failover -Name "ServerFailover" -PartnerServer "Server2" -ScopeId 192.168.1.0 -SharedSecret "TitkosJelszó" -LoadBalancePercent 50 -MaxClientLeadTime 1:00:00
+
+        Itt a -Name az failover kapcsolat neve, a -PartnerServer a partner DHCP szerver neve vagy IP-címe,
+        -ScopeId a scope azonosító, -SharedSecret egy közös titkos kulcs a biztonságos kommunikációhoz,
+        -LoadBalancePercent a terheléselosztás százalékos aránya, -MaxClientLeadTime a maximális ügyfélszolgálati idő.
