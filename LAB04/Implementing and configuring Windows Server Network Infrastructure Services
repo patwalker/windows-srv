@@ -157,3 +157,71 @@ egyik részlege – rendelkezzen saját DNS szerverrel a tesztelési területen.
         Itt a -Name az failover kapcsolat neve, a -PartnerServer a partner DHCP szerver neve vagy IP-címe,
         -ScopeId a scope azonosító, -SharedSecret egy közös titkos kulcs a biztonságos kommunikációhoz,
         -LoadBalancePercent a terheléselosztás százalékos aránya, -MaxClientLeadTime a maximális ügyfélszolgálati idő.
+
+4. feladat Új DNS Zóna és Rekordok Beállítása
+
+    1. Lépés
+    
+        DNS Manager Megnyitása
+
+        A DNS szerveren nyisd meg a DNS Manager-t a Server Manager > Tools > DNS menüpont alatt.
+
+        Új Zóna Létrehozása
+        
+        Kattints jobb gombbal a Forward Lookup Zones-ra, és válaszd a New Zone lehetőséget a varázsló elindításához.
+        
+        A varázslóban válaszd a Primary Zone típust, és ha szükséges, jelöld be az Store the zone in Active Directory (csak AD integrált zónák esetén) opciót.
+        
+        Adj meg egy nevet az új zónának, pl. fusimisi.internal, és kövesd a további lépéseket a zóna létrehozásához.
+
+    2. Lépés: 
+    
+        A Rekord Hozzáadása
+
+        Navigálj az Új Zónához
+
+        A DNS Manager-ben nyisd meg a frissen létrehozott fusimisi.internal zónát.
+
+        Új A Rekord Hozzáadása
+        
+        Kattints jobb gombbal a zóna nevére, és válaszd a New Host (A or AAAA) lehetőséget.
+
+        A Name mezőbe írd be, hogy testapp. Az IP address mezőbe írd be a kívánt IP címet, amelyre a testapp.fusimisi.internal névnek mutatnia kell.
+        Állítsd a TTL értékét 600 másodpercre.
+
+        Beállítások Mentése
+
+        Kattints az Add Host gombra az új A rekord hozzáadásához.
+
+    3. Lépés
+    
+        Forwarder Beállítása
+
+        Navigálj a DNS Szerver Tulajdonságaihoz
+
+        A DNS Manager-ben kattints jobb gombbal a DNS szerver nevére, és válaszd a Properties lehetőséget.
+
+        Forwarders Fül Megnyitása
+
+        Nyisd meg a Forwarders fület.
+
+        Új Forwarder Hozzáadása
+
+        Kattints az Edit gombra, és add hozzá a 1.1.1.1 IP címet mint új forwarder. Ez után kattints az OK gombra.
+
+    4. Lépés
+    
+        Conditionális Forwarder Konfigurálása
+
+        Új Conditionális Forwarder Létrehozása
+
+        A DNS Manager-ben kattints jobb gombbal a Conditional Forwarders-ra, és válaszd a New Conditional Forwarder lehetőséget.
+
+        Beállítások Konfigurálása
+
+        Adj meg egy domain nevet, amelyre a conditionális forwarder alkalmazandó, és add meg a másik DC (Domain Controller) IP címét,
+        ahova a lekérdezéseket továbbítani szeretnéd.
+
+        Beállítások Mentése
+        
+        Kattints az OK gombra a conditionális forwarder beállításainak mentéséhez.
