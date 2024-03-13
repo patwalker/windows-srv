@@ -74,3 +74,46 @@ Jelszó Biztonsági Irányelvek GPO Létrehozása és Alkalmazása
     3. Lépés: A GPO Alkalmazása
 
         Mivel a GPO-t már hozzárendeltük a "Users" OU-hoz a létrehozáskor, automatikusan alkalmazva lesz az OU-ban található összes felhasználóra.
+
+Központi házirend tároló létrehozása
+
+    1. Lépés: ADMX és ADML Fájlok Letöltése
+
+        Látogass el a Microsoft hivatalos letöltőközpontjába, és keresd meg az aktuális Microsoft Office verzióhoz tartozó ADMX/ADML sablonfájlokat. 
+        Töltsd le a csomagot a helyi gépedre.
+
+    2. Lépés: Fájlok Kicsomagolása
+
+        Csomagold ki a letöltött fájlokat egy ideiglenes mappába a helyi gépeden.
+
+    3. Lépés: Fájlok Másolása a Domain Controller-re
+
+        Másold át az ADMX fájlokat a Domain Controller \\Fusimisi.local\SYSVOL\Fusimisi.local\Policies\PolicyDefinitions mappájába.
+
+        Az ADML fájlokat pedig az en-US mappába kell helyezni ezen belül, 
+        tehát \\Fusimisi.local\SYSVOL\Fusimisi.local\Policies\PolicyDefinitions\en-US útvonalon.
+
+    4. Lépés: Group Policy Objektum Létrehozása
+
+        Nyisd meg a Group Policy Management Console-t (GPMC).
+
+        Válaszd ki és kattints jobb gombbal arra az OU-ra, ahol alkalmazni szeretnéd a policy-t,
+        és válaszd a Create a GPO in this domain, and Link it here lehetőséget.
+
+        Adj nevet az új GPO-nak, például Outlook POP3 IMAP Disable.
+
+    5. Lépés: GPO Szerkesztése
+
+        Kattints jobb gombbal az újonnan létrehozott GPO-ra, és válaszd a Edit opciót.
+
+        A Group Policy Management Editor-ban navigálj a 
+        User Configuration > Policies > Administrative Templates > Microsoft Outlook 2016 vagy az aktuális verziódhoz > Account Settings > Exchange útvonalra.
+
+        Keresd meg és kattints duplán a Disable POP3 és Disable IMAP beállításokra egyenként, és állítsd mindkettőt Enabled-re.
+
+    6. Lépés: A Policy Alkalmazása
+
+        A GPO már hozzá van rendelve az előző lépésben kiválasztott domainhez vagy OU-hoz.
+
+        A változtatások érvénybe lépéséhez lehet, hogy szükséges lesz a csoportirányelv-frissítés futtatása a célrendszereken vagy
+        a felhasználóknak újra kell indítaniuk a számítógépeiket.
