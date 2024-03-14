@@ -1,0 +1,215 @@
+Ebben a laborgyakorlatban megismerkedsz a Windows szerver storage szolgáltatásaival, mint például a Dedup vagy az iSCI.
+
+Labor megoldásához szükséges idő: 60 perc
+
+Labor scenario:
+
+A Fusimisi Technologies Kft-nél implementálni kell a Storage Spaces funkciót a Windows Server szervereken a tároláshoz való
+hozzáférés egyszerűsítése és a tárolási szintű redundancia biztosítása érdekében.
+
+A vezetőség azt szeretné, hogy teszteld az Adat Deduplikációt a tárhely megtakarítása érdekében.
+Emellett szeretnék bevezetni az Internet Small Computer System Interface (iSCSI) tárolást,
+hogy egyszerűbb megoldást nyújtsanak a tárolás telepítésére a szervezetben.
+
+Továbbá a szervezet opciókat kutat a tárolás magas rendelkezésre állásának biztosítására, és kutatja azokat a követelményeket,
+amelyeket a magas rendelkezésre állásnak meg kell felelnie.
+
+1. feladat A Fájlszerver Szerepkör Telepítése
+
+    1. Lépés
+    
+        Szerverkezelő indítása: Kattints a Start menüre, és írd be a keresőbe, hogy "Server Manager",
+        majd válaszd ki az alkalmazást a találatok közül.
+
+        Szerepkörök és Szolgáltatások Hozzáadása Varázsló: A Szerverkezelő Dashboard nézetében kattints a "Manage" menüre,
+        majd válaszd a "Add Roles and Features" opciót.
+
+        Telepítési Típus: A "Before You Begin" oldalon kattints a "Next" gombra.
+        A "Select installation type" oldalon hagyjuk az alapértelmezett "Role-based or feature-based installation" beállítást,
+        és kattints ismét a "Next" gombra.
+
+        Célszerver Kiválasztása: A "Select destination server" oldalon válaszd ki azt a szervert,
+        ahol a fájlszerver szerepkört telepíteni szeretnéd. Kattints a "Next" gombra.
+
+        Szerepkörök Kiválasztása: A "Select server roles" oldalon görgetsd le az oldalt,
+        amíg meg nem találod a "File and Storage Services" szekciót, majd bontsd ki.
+        
+        Válaszd ki a "File and iSCSI Services" opciót, és jelöld be a "File Server" jelölőnégyzetet.
+
+        Amikor megkérdezi, hogy telepíteni kívánja-e a szükséges szolgáltatásokat/funkciókat,
+        kattints az "Add Features" gombra,majd a "Next" gombra.
+
+        Funkciók Kiválasztása: Ha szükséges, adhatsz hozzá további funkciókat a "Select features" oldalon,
+        de ez nem kötelező a fájlszerver szerepkör telepítéséhez. Kattints a "Next" gombra.
+
+    2. Lépés: Telepítés
+
+        Telepítési Beállítások Ellenőrzése: Tekintsd át a kiválasztott szerepköröket és funkciókat,
+        majd kattints a "Install" gombra a telepítés megkezdéséhez.
+
+        Telepítés Folyamatának Nyomon Követése: A telepítési folyamat ideje alatt figyeld a folyamat állapotát.
+        Amikor a telepítés befejeződik, kattints a "Close" gombra.
+
+2. feladat A Hyper-V-ben Új VHDX Fájl Létrehozása és Csatolása
+
+    1. Lépés
+    
+        Nyisd meg a Hyper-V Manager-t a Windows Server-en.
+
+        A Hyper-V Manager-ben kattints a jobb oldali menüsávban az "Új" > "Merevlemez" lehetőségre.
+
+        A megjelenő varázslóban válaszd a "Next" gombot, válaszd ki a "VHDX" formátumot, majd kattints ismét a "Next" gombra.
+
+        Válaszd a "Dinamikusan bővülő" opciót, majd kattints a "Next" gombra.
+
+        Fájl Helyének és Méretének Megadása
+
+        Adja meg a VHDX fájl helyét és nevét, például C:\VHDs\FileServerDisk.vhdx.
+
+        Állítsd be a lemez méretét 10 GB-ra, majd kattints a "Next", végül a "Finish" gombra.
+
+    2. Lépés
+    
+        VHDX Fájl Csatolása a VM-hez
+
+        A Hyper-V Manager-ben kattints jobb gombbal a célszerverre (pl. FileServer VM), és válaszd a "Tulajdonságok" lehetőséget.
+
+        Merevlemez Hozzáadása
+
+        A "Hardver" lapon kattints a "Merevlemez" hozzáadására, válaszd ki a "Lemez csatolása",
+        böngészd ki az újonnan létrehozott VHDX fájlt, majd kattints az "OK" gombra.
+
+    3. Lépés
+
+        A VHDX Fájl Elérhetővé Tétele és Formázása a VM-ben
+
+        A VM-ben nyisd meg a "Lemezkezelőt" az "Eszközkezelő" vagy "Disk Management" keresésével a Start menüben.
+
+        Az új lemez megjelenik mint "Nem inicializált". Kattints jobb gombbal rá, és válaszd az "Inicializálás" lehetőséget.
+
+        Hozz létre egy új egyszerű kötetet a lemezen, formázd ReFS fájlrendszerrel.
+
+    4. Lépés
+    
+        SMB Share Létrehozása és Jogosultságok Beállítása
+
+        A VM-ben a File Explorer használatával hozz létre egy új mappát a formázott lemezen.
+
+        Kattints jobb gombbal a mappára, válaszd a "Properties" > "Sharing" > "Advanced Sharing" lehetőséget.
+        
+        Kattints az "Share this folder" jelölőnégyzetre.
+        
+        A "Permissions" gombra kattintva állítsd be a megosztási jogosultságokat: töröld az alapértelmezett jogosultságokat,
+        és add hozzá a "System", "Domain Admins" és "Authenticated Users" csoportokat a megfelelő jogokkal.
+
+        Az "Security" fülön is hasonlóan állítsd be az NTFS jogosultságokat, kiemelve a "System", "Domain Admins",
+        és "Authenticated Users" csoportokat.
+
+    5. Lépés
+
+        Fájl és Mappa Létrehozása a Megosztáson
+
+        A VM-ben, a megosztott mappán belül hozz létre egy új mappát és egy új szöveges dokumentumot (pl. test.txt) a megosztáson.
+
+    6. Lépés
+    
+        Megosztás Tesztelése
+
+        Hálózati Meghajtó Csatlakoztatása
+
+        Egy másik szerverről vagy munkaállomásról próbálj meg hozzáférni a megosztáshoz, és ellenőrizd,
+        hogy a létrehozott fájlok elérhetők-e.
+
+3. feladat A Deduplikáció Telepítése és Beállítása a Fájlszerveren, Tesztelés
+
+    1. Lépés
+    
+        Nyisd meg a Server Manager-t a Start menüből vagy a keresőből.
+
+        A Server Manager főoldalán kattints a "Manage" menüre, majd válaszd az "Add Roles and Features" opciót.
+
+        Telepítési Típus és Célszerver
+
+        A varázslóban haladj végig a "Before you begin" oldalon a "Next" gombbal,
+        válaszd a "Role-based or feature-based installation" opciót, majd válaszd ki a célszervert.
+
+        A "Select server roles" oldalon nincs szükség új szerepkör kiválasztására a deduplikációhoz, így haladj tovább a "Next" gombbal.
+
+        A "Features" oldalon görgess le a "Data Deduplication" opcióig, jelöld be, majd kattints a "Next" gombra.
+
+        A "Confirm installation selections" oldalon ellenőrizd a kiválasztásokat, majd kattints a "Install" gombra.
+        A telepítés után kattints a "Close" gombra.
+
+    2. Lépés: Deduplikáció Beállítása
+
+        Nyisd meg ismét a Server Manager-t, kattints a "File and Storage Services" menüre, majd válaszd a "Volumes" almenüt.
+
+        Kattints jobb gombbal arra a kötetre (volume), ahol a deduplikációt alkalmazni szeretnéd (pl. az újonnan hozzáadott VHDX lemez),
+        és válaszd a "Configure Data Deduplication" opciót.
+
+        A megjelenő ablakban válaszd a "General purpose file server" beállítást a deduplikáció típusának,
+        és állítsd be a deduplikációt azokra a fájlokra, amelyek több mint 0 napja vannak tárolva.
+
+    3. Lépés: Deduplikáció Tesztelése
+
+        Használj egy PowerShell scriptet vagy manuálisan hozz létre fájlokat különböző méretekben a deduplikációhoz kijelölt lemezen.
+
+        A File Explorer-ben kattints jobb gombbal a deduplikált kötetet tartalmazó meghajtóra, és válaszd a "Properties" lehetőséget,
+        hogy megtekinthesd a szabad tárhelyet deduplikáció előtt.
+
+        Deduplikáció Futtatása Manuálisan (Opcionális)
+
+        Bár a deduplikáció automatikusan fut, manuálisan is elindíthatod a folyamatot a
+        Server Manager > "File and Storage Services" > "Volumes" alatt, a kötet jobb gombbal történő kiválasztásával
+        és a "Start Deduplication Job" opcióval.
+
+        Szabad Tárhely Ellenőrzése Deduplikáció Után
+
+        Ismételd meg a szabad tárhely ellenőrzését, hogy láthasd, mennyi helyet spóroltál meg a deduplikációval.
+
+4. feladat iSCSI Cél (Target) Telepítése és Konfigurálása
+
+    1. Lépés
+    
+        iSCSI Szolgáltatás Telepítése
+
+        Nyisd meg a Server Manager-t.
+
+        Kattints a "Manage" menüre, majd válaszd az "Add Roles and Features" lehetőséget.
+
+        A varázslóban válaszd a "Role-based or feature-based installation" lehetőséget, majd válaszd ki a célszervert.
+
+        Haladj tovább a "Next" gombbal a "Features" oldalig, ahol be kell jelölnöd az "iSCSI Target Server" opciót.
+        
+        Kattints a "Next" gombra, majd a "Install" gombra.
+
+    2. Lépés
+    
+        iSCSI Cél (Target) Létrehozása
+
+        A telepítés befejezése után nyisd meg a Server Manager-t, válaszd a "File and Storage Services" lehetőséget,
+        majd kattints az "iSCSI" fülre.
+
+        Kattints a "To create an iSCSI virtual disk, start the New iSCSI Virtual Disk Wizard" linkre.
+
+        Válaszd ki a lemezt vagy partíciót, ahol az iSCSI virtuális lemezt létre szeretnéd hozni,
+        adj meg egy nevet a virtuális lemeznek, és állítsd be a méretét.
+
+        Cél (Target) Konfigurálása
+
+        Adj meg egy nevet az iSCSI cél számára, és add hozzá az iSCSI iniciátorokat (pl. egy másik szerver),
+        amelyek hozzáférhetnek ehhez a tárolóhoz.
+
+    3. Lépés
+    
+        Hozzáférés Tesztelése Másik Szerverről
+
+        Az iSCSI Initiátor Konfigurálása a Kliens Szerveren:
+
+        A kliens szerveren nyisd meg a "iSCSI Initiator" alkalmazást a Start menüben való kereséssel.
+
+        Az "iSCSI Initiator Properties" ablakban írd be a cél szerver IP-címét vagy DNS-nevét az "Target" mezőbe, majd kattints a "Quick Connect" gombra.
+
+        Nyisd meg a "Disk Management" eszközt, ahol megjelenik az újonnan csatlakoztatott iSCSI lemez, mint "Not Initialized".
+        
+        Kattints jobb gombbal a lemezre, és válaszd az "Initialize Disk" lehetőséget, majd formázd és rendelj hozzá meghajtóbetűt.
