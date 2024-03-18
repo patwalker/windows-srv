@@ -1,0 +1,22 @@
+Ebben a laborgyakorlatban megismerkedsz a Windows szerver Failover clustering szolgátatással.
+
+Labor megoldásához szükséges idő: 60 perc
+
+Labor scenario:
+
+Ahogy a Fusimisi Technologies Kft. üzleti tevékenysége növekszik, egyre fontosabbá válik,
+hogy a hálózatán futó számos alkalmazás és szolgáltatás folyamatosan elérhető legyen.
+
+A Fusimisi Technologies-nak számos olyan szolgáltatása és alkalmazása van,
+amelyeket a különböző időzónákban dolgozó belső és külső felhasználók számára kell elérhetővé tenni.
+
+Sok ilyen alkalmazást nem lehet magas rendelkezésre állásúvá tenni a Hálózati Terheléselosztás (NLB) használatával.
+
+Ezért más technológiát kell használnod ezeknek az alkalmazásoknak a magas rendelkezésre állásúvá tételéhez.
+
+Mint a Fusimisi Technologies Kft. egyik vezető hálózati adminisztrátora, te vagy felelős a kudarcálló klaszterezés (failover clustering)
+implementálásáért a Windows Server futó szervereken, hogy magas rendelkezésre állást biztosíts a hálózati szolgáltatások és alkalmazások számára.
+
+Emellett felelős vagy a kudarcálló klaszter konfigurációjának tervezéséért és az alkalmazások és szolgáltatások klaszteren történő telepítéséért.
+
+1. feladat
