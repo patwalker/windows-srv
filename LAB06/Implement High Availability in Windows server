@@ -19,4 +19,196 @@ implementálásáért a Windows Server futó szervereken, hogy magas rendelkezé
 
 Emellett felelős vagy a kudarcálló klaszter konfigurációjának tervezéséért és az alkalmazások és szolgáltatások klaszteren történő telepítéséért.
 
-1. feladat
+1. feladat Failover Clustering Szolgáltatás Telepítése az FS1 és FS2 Szervereken
+
+    1. lépés
+    
+        FS1 és FS2 Szervereken:
+
+        Szerverkezelő Megnyitása
+        
+        Nyisd meg a Server Manager-t.
+
+        Szerepkörök és Szolgáltatások Hozzáadása
+        
+        Kattints a "Manage" menüre, majd válaszd az "Add Roles and Features" lehetőséget.
+
+        Telepítési Típus és Célszerver
+        
+        A varázslóban válaszd a "Role-based or feature-based installation" lehetőséget, majd válaszd ki a célszervert (FS1 vagy FS2).
+
+        Szerepkörök Kiválasztása
+        
+        Haladj tovább a "Next" gombbal a "Features" oldalig, ahol be kell jelölnöd a "Failover Clustering" funkciót. Kattints a "Next" gombra, majd a "Install" gombra.
+
+        
+        Ismételd Meg az Eljárást a Másik Szerveren
+        
+        Ismételd meg a fenti lépéseket az másik szerveren (FS1 vagy FS2).
+
+    2. Lépés
+
+        Fontos: A laboratórium a DC1-et használja, amely egy Active Directory Domain Services (AD DS) domain vezérlőként funkcionál,
+        hogy megosztott iSCSI tárolót biztosítson egy Windows Server alapú klaszter számára.
+        Ez semmilyen módon nem képvisel ajánlott konfigurációt, csupán a labor konfigurációjának egyszerűsítése és a
+        laboratóriumi virtuális gépek számának minimalizálása végett történik. Bármilyen termelési környezetben a domain vezérlőke
+        nem szabad használni a kudarcálló klaszterek számára megosztott tárolóként.
+        Ehelyett az ilyen tárolókat magas rendelkezésre állású infrastruktúrán kell hostolni.
+    
+        iSCSI Virtuális Lemezek Létrehozása a DC1-en
+
+        DC1 Szerveren PowerShell Használatával:
+
+        PowerShell Indítása
+
+        Nyisd meg a PowerShellt rendszergazdaként.
+
+        Új iSCSI Virtuális Lemezek Létrehozása
+        
+        Futassuk a következő parancsokat az új iSCSI virtuális lemezek létrehozásához a C:\storage mappában:
+
+        powershell
+
+        New-Item -Path C:\storage -ItemType Directory
+        New-IscsiVirtualDisk -Path "C:\storage\disk1.vhdx" -Size 1GB
+        New-IscsiVirtualDisk -Path "C:\storage\disk2.vhdx" -Size 1GB
+        New-IscsiVirtualDisk -Path "C:\storage\disk3.vhdx" -Size 1GB
+
+    3. Lépés
+    
+        iSCSI Initiator Szolgáltatás Indítása az FS1 és FS2 Szervereken
+        
+        FS1 és FS2 Szervereken:
+
+        Szolgáltatások Megnyitása
+        
+        Nyisd meg a Services.msc az indító menüben való kereséssel.
+
+        iSCSI Initiator Szolgáltatás
+        
+        Keresd meg az "Microsoft iSCSI Initiator Service"-t, kattints rá jobb gombbal, és válaszd az "Start" lehetőséget.
+
+    4. Lépés
+    
+        iSCSI Cél (Target) Létrehozása és Konfigurálása a DC1-en
+
+        DC1 Szerveren:
+
+        iSCSI Konzol Megnyitása
+        
+        Nyisd meg a Server Manager-t, válaszd a "File and Storage Services" menüpontot, majd kattints az "iSCSI" fülre.
+
+        Új iSCSI Cél (Target) Létrehozása
+        
+        Kattints a "To create an iSCSI virtual disk, start the New iSCSI Virtual Disk Wizard" linkre. Válaszd ki az egyik előzőleg létrehozott virtuális lemezt a listából, és kattints a "Next" gombra.
+
+        Cél (Target) Neve
+        
+        Adj nevet az iSCSI célnak, például ISCSI-L03.
+
+        Initiator Hozzáadása
+        
+        Az "Access Servers" lépésben adj hozzá initiatort, ami magában foglalja az FS1 és FS2 szervereket. Itt meg kell adnod azoknak a szervereknek az IQN azonosítóját vagy IP-címét.
+
+        A Wizard Befejezése
+        
+        Folytasd a varázsló lépéseit, és kattints a "Create" gombra az iSCSI cél (target) létrehozásához és konfigurálásához.
+
+    5. Lépés
+    
+        iSCSI Csatlakoztatása az FS1 és FS2 Szervereken
+        
+        FS1 és FS2 Szervereken:
+
+        iSCSI Initiator Megnyitása
+        
+        Nyisd meg az "iSCSI Initiator" alkalmazást.
+
+        Csatlakozás az iSCSI Célhoz
+        
+        A "Targets" tabon add meg a DC1 szerver címét, majd kattints a "Quick Connect" gombra. Válaszd ki az ISCSI-L03 célt, és csatlakozz hozzá.
+
+    6. Lépés
+    
+        Tesztelés
+
+        Lemez Inicializálása és Formázása
+
+        A csatlakoztatott iSCSI lemezek inicializálása és formázása után létre kell hoznod egy megosztott mappát a lemezen,
+        és tesztelned kell a hozzáférést az FS1 vagy FS2 szerverekről.
+
+2. feladat Failover Cluster Konfigurálása az FS1 és FS2 Szervereken
+
+    1. Lépés
+    
+        Kliensek Csatlakoztatása az iSCSI Target-hez az FS1 és FS2-n
+
+        Mindkét Szerveren (FS1 és FS2):
+
+        iSCSI Initiator Megnyitása
+        
+        Nyissuk meg az iSCSI Initiator alkalmazást a Start menü keresőjében az "iSCSI Initiator" begépelésével.
+
+        
+        Csatlakozás az iSCSI Target-hez
+        
+        A "Targets" tab alatt írd be a DC1 (vagy az iSCSI target szerver) IP-címét vagy hosztnevét a "Quick Connect" panelen,
+        majd kattints a "Quick Connect" gombra.
+        
+        Az iSCSI Target (pl. ISCSI-L03) megjelenik a "Discovered targets" listában. Válaszd ki és kattints a "Connect" gombra.
+
+        Automatikus Újracsatlakozás Beállítása
+
+        A csatlakozási ablakban ellenőrizd a "Enable multi-path" opciót (ha szükséges) és a 
+        "Automatically restore this connection when the system boots" opciót, majd kattints az "OK" gombra.
+
+    2. Lépés
+    
+        iSCSI Lemezek Inicializálása és Formázása az FS2-n
+        
+        Az FS2 Szerveren:
+
+        Lemezkezelő Megnyitása
+        Keresd meg és nyisd meg a "Disk Management" alkalmazást a Start menü keresőjében a
+        "Create and format hard disk partitions" kifejezés begépelésével.
+
+        Új Lemezek Inicializálása
+        
+        Az újonnan csatlakoztatott iSCSI lemezek megjelennek "Not Initialized" állapotban.
+        Kattints jobb gombbal mindegyikre, és válaszd az "Initialize Disk" opciót. Válaszd a "GPT" (GUID Partition Table) opciót, ha szükséges.
+
+        Partíciók Létrehozása és Formázása
+        
+        Kattints jobb gombbal az inicializált lemez egy nem allokált területére, és válaszd a "New Simple Volume" lehetőséget.
+
+        A varázslóban állítsd a partíció méretét maximálisra minden lemez esetében.
+
+        Formázd az NTFS fájlrendszerrel, és rendelj hozzá meghajtóbetűjeleket: E, F és G.
+
+    3. Lépés
+    
+        Failover Cluster Létrehozása
+        
+        Az FS1 vagy FS2 Szerveren:
+
+        Failover Cluster Manager Megnyitása
+        
+        Nyisd meg a Failover Cluster Manager-t a Server Manager > Tools menüből.
+
+        Új Cluster Létrehozása
+        
+        A Failover Cluster Manager-ben kattints a "Create Cluster" linkre a "Management" szekcióban a jobb oldali panelen.
+
+        Cluster Varázsló Indítása
+        
+        A "Before You Begin" oldalon kattints a "Next" gombra. A "Select Servers" oldalon adj hozzá szervereket 
+        az FS1 és FS2 név vagy IP-cím alapján, majd kattints a "Next" gombra.
+
+        Klaszter Beállításainak Konfigurálása
+        
+        Adj meg egy nevet a klaszternek, és válaszd ki az iSCSI lemezeket, amelyeket a klaszter használni fog.
+        Kövesd a varázsló utasításait a klaszter beállításainak konfigurálásához.
+
+        Validálás és Létrehozás
+        
+        Futass egy klaszter-validálást, ha a varázsló kéri. Ha minden teszt sikeres, folytasd a klaszter létrehozását a "Finish" gombra kattintva.

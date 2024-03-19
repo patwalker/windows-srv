@@ -83,3 +83,80 @@ Te mint a szerverekért felelős szakértő, a te feladatod lesz az AD DS telep�
         Adj nevet a csoportnak, pl. "BUD-engineers", és állítsd be a csoport típusát és hatókörét (általában "Global" és "Security").
 
         Kattints az "OK" gombra a csoport létrehozásának befejezéséhez.
+
+2. feladat Az Active Directory Tanúsítvány Szolgáltatások (AD CS) Telepítése és Konfigurálása az Elsődleges Domain Controlleren
+
+    1. Lépés: Az AD CS Szerepkör Telepítése
+
+        Szerverkezelő Megnyitása
+        
+        Nyisd meg a Server Manager-t a Start menüből vagy a keresőből.
+
+        Szerepkörök és Szolgáltatások Hozzáadása
+        
+        A Server Manager kezdőlapján kattints a "Manage" menüre, majd válaszd az "Add Roles and Features" opciót.
+
+        Telepítési Típus és Célszerver
+        
+        A varázslóban válaszd a "Role-based or feature-based installation" lehetőséget,
+        majd válaszd ki a célszervert, amely az elsődleges domain vezérlő lesz.
+
+        Szerepkörök Kiválasztása
+        
+        Haladj tovább a "Next" gombbal a "Select server roles" oldalig, ahol be kell jelölnöd az "Active Directory Certificate Services" funkciót.
+        A rendszer felkínálja a szükséges funkciók telepítését; fogadd el ezeket, majd kattints a "Next" gombra.
+
+        Szolgáltatások Kiválasztása
+        
+        A "Select features" oldalon nem szükséges további funkciókat választani, haladj tovább a "Next" gombbal.
+
+        AD CS Szerepkörök
+        
+        A "Role Services" oldalon válaszd ki a "Certification Authority" és a "Certification Authority Web Enrollment" szolgáltatásokat.
+        Kattints a "Next" gombra, majd a "Install" gombra a telepítés elindításához.
+
+    2. Lépés
+    
+        A Tanúsítványhatóság Konfigurálása
+
+        Konfiguráció Elindítása
+        
+        A telepítés befejezése után a Server Manager-ben jelenik meg egy figyelmeztetés a "Notifications" területen,ami arra utal,
+        hogy további konfigurációs lépéseket kell végrehajtanod. Kattints a "Configure Active Directory Certificate Services" linkre.
+
+        Szolgáltatások Kiválasztása
+        
+        A varázslóban használd a szerver adminisztrátori hitelesítő adatait a folytatáshoz.
+        A "Role Services" oldalon válaszd ki a telepített szolgáltatásokat: "Certification Authority" és "Certification Authority Web Enrollment".
+
+        CA Típusának Kiválasztása
+        
+        Válaszd az "Enterprise CA" lehetőséget, mivel a CA-t egy domain vezérlőn telepíted.
+
+        CA Telepítés
+        
+        Válaszd a "Root CA" lehetőséget, majd válaszd a "Create a new private key" opciót a következő lépésben.
+
+        Kriptográfiai Beállítások
+        
+        Válaszd ki a kívánt kriptográfiai algoritmust és kulcshosszat.
+        Az RSA és az alapértelmezett kulcshossz (2048 vagy 4096 bit) ajánlott.
+
+        CA Név Megadása
+        
+        Adj meg egy nevet a CA számára, ami azonosítja a szervezetben.
+
+        Érvényességi Időszak
+        
+        Állítsd be a tanúsítvány érvényességi idejét, pl. 5 évre.
+
+        Telepítés Befejezése
+        
+        Kövesd a varázsló utasításait a CA konfigurálásának befejezéséhez.
+
+    3. Lépés: Ellenőrzés és Tesztelés
+
+        CA Web Enrollment Oldal Ellenőrzése
+        
+        Nyisd meg egy webböngészőben a CA web enrollment oldalt a http://[szerver neve]/certsrv címen,
+        ahol [szerver neve] a CA-t futtató szerver neve vagy IP-címe. Ellenőrizd, hogy az oldal elérhető-e és működik-e.
