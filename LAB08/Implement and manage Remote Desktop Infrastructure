@@ -1,0 +1,92 @@
+Ebben a laborgyakorlatban megismerkedsz a Windows Admin Center szolgáltatással.
+
+Labor megoldásához szükséges idő: 60 perc
+
+Labor scenario:
+
+A Fusimisi Technologies Kft., egy innovatív vállalat, amely folyamatosan törekszik arra, hogy optimalizálja működését és növelje hatékonyságát.
+Ennek részeként a vállalat döntött úgy, hogy a raktárlogisztikai szoftverét egy terminál szerveres
+környezetben kívánja elérhetővé tenni a felhasználók számára, RemoteApp-on keresztül.
+
+Ez lehetővé teszi a felhasználók számára, hogy bárhonnan, bármilyen eszközről hozzáférjenek a szoftverhez,
+így növelve a rugalmasságot és csökkentve az infrastrukturális költségeket.
+
+Te, mint a Fusimisi Technologies Kft. tapasztalt rendszermérnöke, azt a feladatot kaptad, hogy tervezd meg és implementáld az RDS
+(Remote Desktop Services) környezetet Windows Server alapokon.
+
+Az RDS környezetnek támogatnia kell a RemoteApp technológiát, ami lehetővé teszi a vállalat számára,
+hogy a raktárlogisztikai alkalmazást virtuális alkalmazásként publikálja, így a felhasználók közvetlenül az asztalukról indíthatják
+az alkalmazást anélkül, hogy teljes asztali környezetet kellene használniuk.
+
+
+1. feladat Virtuális Gépek Létrehozása Hyper-V-ben
+
+    1. Lépés
+    
+        Mindkét Szerverre (40 GB HDD, 4 GB RAM):
+
+        Hyper-V Manager Megnyitása
+        
+        Nyissuk meg a Hyper-V Managert.
+
+        Új Virtuális Gép Létrehozása
+        
+        Kattintsunk a "New" > "Virtual Machine" opcióra.
+        
+        Kövessük a varázsló utasításait: adjunk nevet a gépnek (pl. RDS1 és RDS2), válasszuk a Generation 2-t,
+        állítsuk be a memóriát 4 GB-ra, válasszunk vagy hozzunk létre virtuális switchet a hálózati adapter számára.
+
+        Hozzunk létre új virtuális merevlemezt 40 GB mérettel.
+        
+        Válasszuk az ISO fájlt a Windows Server telepítéséhez, és fejezzük be a virtuális gép létrehozását.
+
+    2. Lépés
+    
+        RDS Szerepkörök Telepítése és Konfigurálása
+    
+        Elsődleges Szerver (RDS1) - Connection Broker, Session Host, Web Szerver
+
+        Windows Server Telepítése és a Domainbe Léptetés
+    
+        Telepítsük a Windows Servert, állítsuk be a szükséges alapkonfigurációkat, és léptessük be a szervereket a domainbe.
+
+        Szerverkezelő és Szerepkörök Telepítése
+        
+        Nyissuk meg a Szerverkezelőt, válasszuk a "Add Roles and Features" lehetőséget.
+        
+        A "Roles" szekción belül válasszuk ki a "Remote Desktop Services" telepítését,
+        majd a telepítés típusaként válasszuk a "Standard Deployment" opciót.
+        
+        Válasszuk a "Session-based desktop deployment" lehetőséget.
+        
+        A "Role Services" választónál jelöljük be a "RD Connection Broker", "RD Web Access" és "RD Session Host" szolgáltatásokat.
+        
+        Kövessük a további lépéseket a telepítés befejezéséhez.
+
+        Másodlagos Szerver (RDS2) - Csak Session Host
+
+        Szerverkezelő és Szerepkörök Telepítése
+        
+        Ismételjük meg a szerepkör telepítési lépéseket az RDS2 szerveren, de ebben az esetben csak a "RD Session Host" szolgáltatást válasszuk.
+
+    3. Lépés
+    
+        RDS Környezet Konfigurálása
+
+        RDS Környezet Beállítása az Elsődleges Szerveren (RDS1)
+        
+        A Szerverkezelőben, a "Remote Desktop Services" fül alatt konfiguráljuk a deploymentet.
+        Adjuk hozzá az RDS2 szerverünket a Session Host-okhoz a "Servers" menüpont alatt.
+        
+        Állítsuk be a kapcsolati brokert, és konfiguráljuk a web hozzáférést.
+
+    4. Lépés
+    
+        Tesztelés
+
+        Kapcsolat Tesztelése
+        
+        A DC1 vagy bármely más szerver/domain munkaállomásról, nyissuk meg a webböngészőt és
+        írjuk be az RDS1 Web Access URL-jét (pl. http://rds1.fusimisi.local/RDWeb).
+        
+        Próbáljunk meg bejelentkezni és elérni a publikált alkalmazásokat vagy asztalokat
