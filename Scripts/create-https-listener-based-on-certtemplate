@@ -1,0 +1,41 @@
+# PowerShell Script to Create WinRM HTTPS Listener with Specific Issuer's Certificate
+
+# Define the issuer name to match
+$issuerName = "CN=CA-NAME" # Replace with your actual issuer name
+
+# Get the FQDN of the computer
+$fqdn = [System.Net.Dns]::GetHostEntry("").HostName
+
+# Define the certificate store path
+$certStorePath = "Cert:\LocalMachine\My"
+
+# Find the certificate with a subject name matching the FQDN and the issuer name
+$certificate = Get-ChildItem $certStorePath | 
+               Where-Object { $_.Subject -match "CN=$fqdn" -and $_.Issuer -match $issuerName } | 
+               Select-Object -First 1
+
+if (-not $certificate) {
+    Write-Error "No certificate found with subject name matching the FQDN and issuer name: $fqdn, $issuerName"
+    exit
+}
+
+# Check if an HTTPS listener already exists
+$listener = Get-ChildItem WSMan:\localhost\Listener | Where-Object { $_.Keys -like "Transport=HTTPS" }
+
+if ($listener) {
+    Write-Host "An HTTPS listener already exists. No changes made."
+} else {
+    try {
+        # Create a new listener using the found certificate
+        New-Item -Path WSMan:\localhost\Listener -Transport HTTPS -Address * -CertificateThumbprint $certificate.Thumbprint -HostName $fqdn -Force
+        
+        Write-Host "HTTPS listener created successfully on port 5986 with certificate for $fqdn issued by $issuerName."
+    } catch {
+        Write-Error "Failed to create WinRM HTTPS listener. Error: $_"
+        exit
+    }
+
+    # Restart the WinRM service to apply changes
+    Restart-Service -Name WinRM -Force
+    Write-Host "WinRM service restarted."
+}
