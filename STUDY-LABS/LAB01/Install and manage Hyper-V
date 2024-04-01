@@ -161,7 +161,7 @@ A csapatoddal együtt tervezitek kiértékelni a Windows Server virtuális gépe
         Válaszd ki az "Image file (.iso)" opciót, majd böngészd ki és válaszd ki az ISO fájlt,
         amit az operációs rendszer telepítéséhez szeretnél használni.
         
-        Ezt megtalálhatod a "C:\Users[FelhasználóNév]\Downloads" mappában.
+        Ezt megtalálhatod a "Z:\WindowsServer22.iso" hálózati meghajtón.
 
         Kattints a "Browse" gombra az ISO fájl kiválasztásához.
 
@@ -181,3 +181,401 @@ A csapatoddal együtt tervezitek kiértékelni a Windows Server virtuális gépe
 
         Ezután kattints jobb gombbal újra a VM-re, és válaszd a "Connect" opciót, hogy megnyisd a VM konzolt, 
         ahol követheted az operációs rendszer telepítési folyamatát.
+
+    11. Lépés: Windows szerver telepítése
+
+        Telepítési Folyamat Kezdete
+
+        Válaszd ki a Telepítési Nyelvet: Válaszd az „English (United States)” opciót a nyelvhez.
+
+        Idő és Pénznem Formátuma: Itt válaszd a „Magyar (Magyarország)” opciót.
+
+        Billentyűzet vagy Bemeneti Módszer: Válaszd a „Magyar” opciót.
+
+        Kattints a 'Tovább' gombra.
+
+        Telepítés Indítása
+
+        Kattints a 'Telepítés most' gombra. Mivel egy értékelési verziót használsz, a termékkulcs megadása nem szükséges ebben a lépésben.
+
+        Kiadás Kiválasztása
+
+        Válaszd ki a Telepíteni Kívánt Windows Server Verziót: Mivel értékelési verziót használsz,
+        választhatsz a rendelkezésre álló értékelési opciók közül. Jelöld be az előtted álló lehetőségek közül a kívánt verziót,
+        például „Windows Server 2019 Standard Evaluation (Desktop Experience)” vagy egyéb elérhető értékelési verziót.
+
+        Telepítési Típus
+
+        Válaszd a „Custom: Install Windows only (advanced)” Opciót: Ez lehetővé teszi, hogy egy tiszta telepítést végezz.
+
+        Partíciók Beállítása
+
+        Lemezpartíciók Konfigurálása: Ha szükséges, törölheted a meglévő partíciókat és hozhatsz létre újat.
+        Válaszd ki azt a partíciót, amelyre telepíteni szeretnéd a Windowst, majd folytasd a telepítést.
+
+        Telepítési Folyamat
+
+        A Telepítés Megkezdése: A telepítési folyamat most kezdődik el.
+        A rendszer másolja a fájlokat, telepíti és konfigurálja a Windows Servert, ez időbe telik.
+        A folyamat befejeztével a gép újraindulhat.
+
+        Alapbeállítások Konfigurálása
+
+        Kezdeti Beállítások: A telepítés után az alapértelmezett beállításokat,
+        mint például a rendszer adminisztrátori fiókjának létrehozása és jelszavának beállítása, kell megadnod.
+        Mivel a rendszer nyelve angol, de a formátum magyar, a helyi beállításokra vonatkozó utasításokat is követheted ebben a szakaszban.
+
+4. feladat
+
+    1. Lépés: Hyper-V Manager Megnyitása
+
+        Nyisd meg a Hyper-V Manager alkalmazást. 
+        
+        Ezt megteheted az start menü keresőjében a "Hyper-V Manager" begépelésével és kiválasztásával.
+
+    2. Lépés: Új Virtuális Gép Varázsló Indítása
+
+        A Hyper-V Manager bal oldali paneljén kattints jobb gombbal a Hyper-V szerver nevére, és válaszd az "Új" > "Virtuális Gép" lehetőséget a menüből.
+
+    3. Lépés: A Varázsló Első Lépése
+
+        A "Before You Begin" ablakban kattints a "Next" gombra.
+
+        Adj meg egy nevet a virtuális gépnek, például "DC2", és válaszd ki a tárolási helyét. Kattints a "Next" gombra.
+
+    4. Lépés: Generáció Kiválasztása
+
+        Válaszd a "Generation 1" opciót, majd kattints a "Next" gombra.
+
+    5. Lépés: Memória Konfigurálása
+
+        Adj meg 4096 MB RAM-ot a "Startup memory" mezőben, és győződj meg róla,
+        hogy a "Use Dynamic Memory for this virtual machine" opció nincs bejelölve.
+        
+        Kattints a "Next" gombra.
+
+    6. Lépés: Hálózati Konfiguráció
+
+        A "Configure Networking" ablakban válaszd ki a "NATSwitch" opciót a legördülő menüből a korábban létrehozott virtuális switchhez való csatlakozáshoz. Kattints a "Next" gombra.
+
+    7. Lépés: Virtuális Merevlemez Konfigurálása
+
+        A "Connect Virtual Hard Disk" ablakban válaszd az "Create a virtual hard disk" opciót.
+        
+        Adj meg egy nevet, helyet a virtuális merevlemez számára, és állítsd a méretét 32 GB-ra.
+        
+        Kattints a "Next" gombra.
+
+    8. Lépés: Telepítési Lehetőségek
+
+        A "Installation Options" szakaszban válaszd a "Install an operating system from a bootable CD/DVD-ROM" lehetőséget.
+
+        Válaszd ki az "Image file (.iso)" opciót, majd böngészd ki és válaszd ki az ISO fájlt,
+        amit az operációs rendszer telepítéséhez szeretnél használni.
+        
+        Ezt megtalálhatod a "Z:\WindowsServer22.iso" hálózati meghajtón.
+
+        Kattints a "Browse" gombra az ISO fájl kiválasztásához.
+
+        Miután kiválasztottad az ISO fájlt, kattints a "Next" gombra.
+
+    9. Lépés: A Varázsló Befejezése
+
+        Ellenőrizd a megadott konfigurációkat a "Summary" oldalon, hogy minden megfelelő-e.
+
+        Ha minden rendben van, kattints a "Finish" gombra.
+        
+        A Hyper-V most létrehozza a "DC2" nevű virtuális gépet a megadott specifikációk alapján.
+
+    10. Lépés: Virtuális Gép Indítása
+
+        A Hyper-V Managerben, a létrehozott "DC2" virtuális gépre kattintva jobb gombbal, válaszd a "Start" opciót a virtuális gép elindításához.
+
+        Ezután kattints jobb gombbal újra a VM-re, és válaszd a "Connect" opciót, hogy megnyisd a VM konzolt, 
+        ahol követheted az operációs rendszer telepítési folyamatát.
+
+    11. Lépés: Ugyanaz, mint a 3. feladatban, annyi módosítással, hogy Server Core verziót kell telepíteni.
+
+5. feladat
+
+    1. Lépés: Hyper-V Manager Megnyitása
+
+        Nyisd meg a Hyper-V Manager alkalmazást. 
+        
+        Ezt megteheted az start menü keresőjében a "Hyper-V Manager" begépelésével és kiválasztásával.
+
+    2. Lépés: Új Virtuális Gép Varázsló Indítása
+
+        A Hyper-V Manager bal oldali paneljén kattints jobb gombbal a Hyper-V szerver nevére, és válaszd az "Új" > "Virtuális Gép" lehetőséget a menüből.
+
+    3. Lépés: A Varázsló Első Lépése
+
+        A "Before You Begin" ablakban kattints a "Next" gombra.
+
+        Adj meg egy nevet a virtuális gépnek, például "FS1", és válaszd ki a tárolási helyét. Kattints a "Next" gombra.
+
+    4. Lépés: Generáció Kiválasztása
+
+        Válaszd a "Generation 1" opciót, majd kattints a "Next" gombra.
+
+    5. Lépés: Memória Konfigurálása
+
+        Adj meg 4096 MB RAM-ot a "Startup memory" mezőben, és győződj meg róla,
+        hogy a "Use Dynamic Memory for this virtual machine" opció nincs bejelölve.
+        
+        Kattints a "Next" gombra.
+
+    6. Lépés: Hálózati Konfiguráció
+
+        A "Configure Networking" ablakban válaszd ki a "NATSwitch" opciót a legördülő menüből a korábban létrehozott virtuális switchhez való csatlakozáshoz. Kattints a "Next" gombra.
+
+    7. Lépés: Virtuális Merevlemez Konfigurálása
+
+        A "Connect Virtual Hard Disk" ablakban válaszd az "Create a virtual hard disk" opciót.
+        
+        Adj meg egy nevet, helyet a virtuális merevlemez számára, és állítsd a méretét 32 GB-ra.
+        
+        Kattints a "Next" gombra.
+
+    8. Lépés: Telepítési Lehetőségek
+
+        A "Installation Options" szakaszban válaszd a "Install an operating system from a bootable CD/DVD-ROM" lehetőséget.
+
+        Válaszd ki az "Image file (.iso)" opciót, majd böngészd ki és válaszd ki az ISO fájlt,
+        amit az operációs rendszer telepítéséhez szeretnél használni.
+        
+        Ezt megtalálhatod a "Z:\WindowsServer22.iso" hálózati meghajtón.
+
+        Kattints a "Browse" gombra az ISO fájl kiválasztásához.
+
+        Miután kiválasztottad az ISO fájlt, kattints a "Next" gombra.
+
+    9. Lépés: A Varázsló Befejezése
+
+        Ellenőrizd a megadott konfigurációkat a "Summary" oldalon, hogy minden megfelelő-e.
+
+        Ha minden rendben van, kattints a "Finish" gombra.
+        
+        A Hyper-V most létrehozza a "FS1" nevű virtuális gépet a megadott specifikációk alapján.
+
+    10. Lépés: Virtuális Gép Indítása
+
+        A Hyper-V Managerben, a létrehozott "FS1" virtuális gépre kattintva jobb gombbal, válaszd a "Start" opciót a virtuális gép elindításához.
+
+        Ezután kattints jobb gombbal újra a VM-re, és válaszd a "Connect" opciót, hogy megnyisd a VM konzolt, 
+        ahol követheted az operációs rendszer telepítési folyamatát.
+
+    11. Lépés: Ugyanaz, mint a 3. feladatban.
+
+6. feladat
+
+    1. Lépés: Hyper-V Manager Megnyitása
+
+        Nyisd meg a Hyper-V Manager alkalmazást. 
+        
+        Ezt megteheted az start menü keresőjében a "Hyper-V Manager" begépelésével és kiválasztásával.
+
+    2. Lépés: Új Virtuális Gép Varázsló Indítása
+
+        A Hyper-V Manager bal oldali paneljén kattints jobb gombbal a Hyper-V szerver nevére, és válaszd az "Új" > "Virtuális Gép" lehetőséget a menüből.
+
+    3. Lépés: A Varázsló Első Lépése
+
+        A "Before You Begin" ablakban kattints a "Next" gombra.
+
+        Adj meg egy nevet a virtuális gépnek, például "FS2", és válaszd ki a tárolási helyét. Kattints a "Next" gombra.
+
+    4. Lépés: Generáció Kiválasztása
+
+        Válaszd a "Generation 1" opciót, majd kattints a "Next" gombra.
+
+    5. Lépés: Memória Konfigurálása
+
+        Adj meg 4096 MB RAM-ot a "Startup memory" mezőben, és győződj meg róla,
+        hogy a "Use Dynamic Memory for this virtual machine" opció nincs bejelölve.
+        
+        Kattints a "Next" gombra.
+
+    6. Lépés: Hálózati Konfiguráció
+
+        A "Configure Networking" ablakban válaszd ki a "NATSwitch" opciót a legördülő menüből a korábban létrehozott virtuális switchhez való csatlakozáshoz. Kattints a "Next" gombra.
+
+    7. Lépés: Virtuális Merevlemez Konfigurálása
+
+        A "Connect Virtual Hard Disk" ablakban válaszd az "Create a virtual hard disk" opciót.
+        
+        Adj meg egy nevet, helyet a virtuális merevlemez számára, és állítsd a méretét 32 GB-ra.
+        
+        Kattints a "Next" gombra.
+
+    8. Lépés: Telepítési Lehetőségek
+
+        A "Installation Options" szakaszban válaszd a "Install an operating system from a bootable CD/DVD-ROM" lehetőséget.
+
+        Válaszd ki az "Image file (.iso)" opciót, majd böngészd ki és válaszd ki az ISO fájlt,
+        amit az operációs rendszer telepítéséhez szeretnél használni.
+        
+        Ezt megtalálhatod a "Z:\WindowsServer22.iso" hálózati meghajtón.
+
+        Kattints a "Browse" gombra az ISO fájl kiválasztásához.
+
+        Miután kiválasztottad az ISO fájlt, kattints a "Next" gombra.
+
+    9. Lépés: A Varázsló Befejezése
+
+        Ellenőrizd a megadott konfigurációkat a "Summary" oldalon, hogy minden megfelelő-e.
+
+        Ha minden rendben van, kattints a "Finish" gombra.
+        
+        A Hyper-V most létrehozza a "FS2" nevű virtuális gépet a megadott specifikációk alapján.
+
+    10. Lépés: Virtuális Gép Indítása
+
+        A Hyper-V Managerben, a létrehozott "FS2" virtuális gépre kattintva jobb gombbal, válaszd a "Start" opciót a virtuális gép elindításához.
+
+        Ezután kattints jobb gombbal újra a VM-re, és válaszd a "Connect" opciót, hogy megnyisd a VM konzolt, 
+        ahol követheted az operációs rendszer telepítési folyamatát.
+
+    11. Lépés: Ugyanaz, mint a 3. feladatban.
+
+7. feladat
+
+    1. Lépés: Hyper-V Manager Megnyitása
+
+        Nyisd meg a Hyper-V Manager alkalmazást. 
+        
+        Ezt megteheted az start menü keresőjében a "Hyper-V Manager" begépelésével és kiválasztásával.
+
+    2. Lépés: Új Virtuális Gép Varázsló Indítása
+
+        A Hyper-V Manager bal oldali paneljén kattints jobb gombbal a Hyper-V szerver nevére, és válaszd az "Új" > "Virtuális Gép" lehetőséget a menüből.
+
+    3. Lépés: A Varázsló Első Lépése
+
+        A "Before You Begin" ablakban kattints a "Next" gombra.
+
+        Adj meg egy nevet a virtuális gépnek, például "JUMP1", és válaszd ki a tárolási helyét. Kattints a "Next" gombra.
+
+    4. Lépés: Generáció Kiválasztása
+
+        Válaszd a "Generation 1" opciót, majd kattints a "Next" gombra.
+
+    5. Lépés: Memória Konfigurálása
+
+        Adj meg 6144 MB RAM-ot a "Startup memory" mezőben, és győződj meg róla,
+        hogy a "Use Dynamic Memory for this virtual machine" opció nincs bejelölve.
+        
+        Kattints a "Next" gombra.
+
+    6. Lépés: Hálózati Konfiguráció
+
+        A "Configure Networking" ablakban válaszd ki a "NATSwitch" opciót a legördülő menüből a korábban létrehozott virtuális switchhez való csatlakozáshoz. Kattints a "Next" gombra.
+
+    7. Lépés: Virtuális Merevlemez Konfigurálása
+
+        A "Connect Virtual Hard Disk" ablakban válaszd az "Create a virtual hard disk" opciót.
+        
+        Adj meg egy nevet, helyet a virtuális merevlemez számára, és állítsd a méretét 32 GB-ra.
+        
+        Kattints a "Next" gombra.
+
+    8. Lépés: Telepítési Lehetőségek
+
+        A "Installation Options" szakaszban válaszd a "Install an operating system from a bootable CD/DVD-ROM" lehetőséget.
+
+        Válaszd ki az "Image file (.iso)" opciót, majd böngészd ki és válaszd ki az ISO fájlt,
+        amit az operációs rendszer telepítéséhez szeretnél használni.
+        
+        Ezt megtalálhatod a "Z:\WindowsServer22.iso" hálózati meghajtón.
+
+        Kattints a "Browse" gombra az ISO fájl kiválasztásához.
+
+        Miután kiválasztottad az ISO fájlt, kattints a "Next" gombra.
+
+    9. Lépés: A Varázsló Befejezése
+
+        Ellenőrizd a megadott konfigurációkat a "Summary" oldalon, hogy minden megfelelő-e.
+
+        Ha minden rendben van, kattints a "Finish" gombra.
+        
+        A Hyper-V most létrehozza a "JUMP1" nevű virtuális gépet a megadott specifikációk alapján.
+
+    10. Lépés: Virtuális Gép Indítása
+
+        A Hyper-V Managerben, a létrehozott "JUMP1" virtuális gépre kattintva jobb gombbal, válaszd a "Start" opciót a virtuális gép elindításához.
+
+        Ezután kattints jobb gombbal újra a VM-re, és válaszd a "Connect" opciót, hogy megnyisd a VM konzolt, 
+        ahol követheted az operációs rendszer telepítési folyamatát.
+
+    11. Lépés: Ugyanaz, mint a 3. feladatban.
+
+8. feladat
+
+    1. Lépés: Hyper-V Manager Megnyitása
+
+        Nyisd meg a Hyper-V Manager alkalmazást. 
+        
+        Ezt megteheted az start menü keresőjében a "Hyper-V Manager" begépelésével és kiválasztásával.
+
+    2. Lépés: Új Virtuális Gép Varázsló Indítása
+
+        A Hyper-V Manager bal oldali paneljén kattints jobb gombbal a Hyper-V szerver nevére, és válaszd az "Új" > "Virtuális Gép" lehetőséget a menüből.
+
+    3. Lépés: A Varázsló Első Lépése
+
+        A "Before You Begin" ablakban kattints a "Next" gombra.
+
+        Adj meg egy nevet a virtuális gépnek, például "CL1", és válaszd ki a tárolási helyét. Kattints a "Next" gombra.
+
+    4. Lépés: Generáció Kiválasztása
+
+        Válaszd a "Generation 1" opciót, majd kattints a "Next" gombra.
+
+    5. Lépés: Memória Konfigurálása
+
+        Adj meg 4096 MB RAM-ot a "Startup memory" mezőben, és győződj meg róla,
+        hogy a "Use Dynamic Memory for this virtual machine" opció nincs bejelölve.
+        
+        Kattints a "Next" gombra.
+
+    6. Lépés: Hálózati Konfiguráció
+
+        A "Configure Networking" ablakban válaszd ki a "NATSwitch" opciót a legördülő menüből a korábban létrehozott virtuális switchhez való csatlakozáshoz. Kattints a "Next" gombra.
+
+    7. Lépés: Virtuális Merevlemez Konfigurálása
+
+        A "Connect Virtual Hard Disk" ablakban válaszd az "Create a virtual hard disk" opciót.
+        
+        Adj meg egy nevet, helyet a virtuális merevlemez számára, és állítsd a méretét 32 GB-ra.
+        
+        Kattints a "Next" gombra.
+
+    8. Lépés: Telepítési Lehetőségek
+
+        A "Installation Options" szakaszban válaszd a "Install an operating system from a bootable CD/DVD-ROM" lehetőséget.
+
+        Válaszd ki az "Image file (.iso)" opciót, majd böngészd ki és válaszd ki az ISO fájlt,
+        amit az operációs rendszer telepítéséhez szeretnél használni.
+        
+        Ezt megtalálhatod a "Z:\Windows10.iso" hálózati meghajtón.
+
+        Kattints a "Browse" gombra az ISO fájl kiválasztásához.
+
+        Miután kiválasztottad az ISO fájlt, kattints a "Next" gombra.
+
+    9. Lépés: A Varázsló Befejezése
+
+        Ellenőrizd a megadott konfigurációkat a "Summary" oldalon, hogy minden megfelelő-e.
+
+        Ha minden rendben van, kattints a "Finish" gombra.
+        
+        A Hyper-V most létrehozza a "CL1" nevű virtuális gépet a megadott specifikációk alapján.
+
+    10. Lépés: Virtuális Gép Indítása
+
+        A Hyper-V Managerben, a létrehozott "CL1" virtuális gépre kattintva jobb gombbal, válaszd a "Start" opciót a virtuális gép elindításához.
+
+        Ezután kattints jobb gombbal újra a VM-re, és válaszd a "Connect" opciót, hogy megnyisd a VM konzolt, 
+        ahol követheted az operációs rendszer telepítési folyamatát.
+
+    11. Lépés: Ugyanaz, mint a 3. feladatban.

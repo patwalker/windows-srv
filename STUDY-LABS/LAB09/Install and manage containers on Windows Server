@@ -1,0 +1,69 @@
+Ebben a laborgyakorlatban megismerkedsz az Docker-rel és a konténerekkel Windows-on.
+
+Labor megoldásához szükséges idő: 15 perc
+
+1. feladat
+
+    1. lépés: Szerepkörök és szolgáltatások telepítése
+
+        Először telepítsd a szükséges szerepköröket és szolgáltatásokat.
+
+        Nyisd meg a Szerverkezelőt (Server Manager).
+
+        Válaszd a Szerepkörök és szolgáltatások hozzáadása lehetőséget.
+
+        A Szerepkörök hozzáadása és szolgáltatások varázsló ablakban,
+        a Telepítés típusa lépésnél válaszd az Alapértelmezett szerveralapú telepítés opciót.
+        A Szerver kiválasztása lépésnél válaszd ki a telepíteni kívánt szervert.
+
+        A Szerepkörök kiválasztása lépésnél ne jelölj be semmit, csak kattints a Tovább gombra.
+
+        A Szolgáltatások kiválasztása lépésnél válaszd ki a Konténer szolgáltatást, majd kattints a Tovább gombra.
+
+        A Telepítés lépésnél ellenőrizd a beállításokat, és kattints a Telepítés gombra.
+
+        A telepítés befejezése után indítsd újra a szervert.
+
+    2. lépés Docker telepítése
+
+        A Docker telepítése PowerShell használatával történik.
+
+        Nyisd meg a PowerShell-t rendszergazdaként.
+
+        Futtasd a következő parancsot a Docker telepítéséhez:
+
+        Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1" -OutFile install-docker-ce.ps1
+        .\install-docker-ce.ps1
+
+        Indítsd újra a szervert a változások érvényesítéséhez:
+
+        Restart-Computer -Force
+
+    3. lépés: Docker szolgáltatás indítása
+
+        Miután újraindítottad a szervert, ellenőrizd a Docker szolgáltatás állapotát:
+
+        Get-Service Docker
+
+        Ha a szolgáltatás nem fut, indítsd el:
+
+        Start-Service Docker
+
+        Ellenőrizd a Docker Telepítését
+
+        docker version
+
+    4. lépés Hello World konténer futtatása
+
+        Most már készen állsz arra, hogy futtass egy "Hello World" konténert, ami igazolja, hogy a Docker helyesen van telepítve és működik.
+
+        Nyisd meg ismét a PowerShell-t rendszergazdaként.
+
+        Futtasd a következő parancsot egy "Hello World" konténer futtatásához:
+
+        docker run hello-world
+
+        Ha minden rendben ment, látnod kellene egy üzenetet, ami megerősíti, hogy a Docker helyesen működik,
+        és a "Hello World" konténer fut.
+
+

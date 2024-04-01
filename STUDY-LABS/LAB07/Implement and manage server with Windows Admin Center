@@ -2,70 +2,15 @@ Ebben a laborgyakorlatban megismerkedsz a Windows Admin Center szolgáltatással
 
 Labor megoldásához szükséges idő: 60 perc
 
-Labor scenario:
+1. feladat Windows Admin Center telepítése
 
-
-1. feladat Windows Server Standard Telepítése és Beállítása Hyper-V-ben
-    
     1. Lépés
-        
-        Virtuális Gép Létrehozása Hyper-V-ben
-
-        Hyper-V Manager Megnyitása
-        
-        Nyissuk meg a Hyper-V Managert.
-
-        Új Virtuális Gép Varázsló
-        
-        Kattints a "New" menüre a jobb oldali panelen, majd válaszd az "Virtual Machine" opciót.
-
-        Varázsló Lépései
-        
-        A megjelenő varázslóban kattints a "Next" gombra. Add meg a virtuális gép nevét, pl. "WindowsServerGUI".
-        
-        Válaszd ki a generációt (ajánlott a Generation 2, ha a rendszer támogatja).
-        
-        Állítsd be a memóriát 4 GB-ra.
-        
-        Konfiguráld a hálózati adaptert, hogy csatlakozzon a megfelelő virtuális switchhez.
-        
-        Hozz létre egy új virtuális merevlemezt, méretezd 40 GB-ra.
-        
-        Válaszd ki a telepítési opciókat: "Install an operating system from a bootable CD/DVD-ROM" > "Image file (.iso)" és 
-        böngéssz az előkészített Windows Server ISO fájlhoz.
-        
-        Befejezéshez kattints a "Finish" gombra.
-
-    2. Lépés: Windows Server Telepítése a Virtuális Gépre
-
-        Virtuális Gép Indítása és Telepítés
-        
-        Indítsd el a virtuális gépet a Hyper-V Managerből.
-        
-        Kövesd a Windows Server telepítési útmutatót: válaszd ki a nyelvet, az időt, a billentyűzetet,
-        add meg a termékkulcsot, válaszd a "Windows Server Standard (Desktop Experience)" opciót a GUI-hoz,
-        és válaszd ki a telepítési típust. Formázd a lemezt, ha szükséges, és indítsd el a telepítést.
-
-    3. Lépés
-    
-        Virtuális Gép Domainbe Léptetése
-
-        Rendszer Beállítások
-        
-        A telepítés után, a szerveren nyisd meg a "System Properties", keresd meg a "Change settings" opciót a "Computer name" fülön.
-
-        Domainhez Csatlakozás
-        
-        A "Member of" szekcióban válaszd a "Domain" opciót, és írd be a domain nevét, pl. "fusimisi.local".
-        Add meg a domain adminisztrátor hitelesítő adatait, amikor arra kérnek.
-
-    4. Lépés
     
         Windows Admin Center Telepítése
 
         Windows Admin Center Letöltése
         
-        Töltsd le a Windows Admin Center telepítőfájlt a Microsoft hivatalos oldaláról.
+        Töltsd le a Windows Admin Center telepítőfájlt a Microsoft hivatalos oldaláról vagy megtalálod a Z:\ meghajtón.
 
         Telepítés
         
@@ -74,7 +19,7 @@ Labor scenario:
         Válaszd ki a telepítés típusát (ajánlott a szerveren történő telepítés),
         és befejezés után nyisd meg a Windows Admin Centert a megadott URL-en keresztül.
 
-    5. Lépés
+    2. Lépés
     
         Szerverek Hozzáadása a Windows Admin Centerhez
 
@@ -88,10 +33,57 @@ Labor scenario:
         
         Add hozzá a domainben lévő szervereket, például az FS1-et és FS2-t, megadva a hosztneveket vagy IP-címeket.
 
-    6. Lépés
+    3. Lépés
     
-    Tesztelés és Ellenőrzés
+        Tesztelés és Ellenőrzés
 
-    Kapcsolatok Ellenőrzése
-    
-    Ellenőrizd a hozzáadott szerverek elérhetőségét a Windows Admin Centerben, és teszteld a menedzselési funkciókat.
+        Kapcsolatok Ellenőrzése
+        
+        Ellenőrizd a hozzáadott szerverek elérhetőségét a Windows Admin Centerben, és teszteld a menedzselési funkciókat.
+
+2. feladat Teljesítményfigyelés beállítása és munkaterület mentése
+   
+    1. Lépés: Teljesítményfigyelő widget hozzáadása
+
+        Nyisd meg a Windows Admin Center felületét a webböngészőben.
+
+        Válaszd ki az egyik előzőleg hozzáadott szervert.
+
+        A "Overview" (Áttekintés) lapon keresd meg a "Add" (Hozzáadás) gombot a widgetek fejlécében,
+        és válaszd a "Performance Monitor" (Teljesítményfigyelő) lehetőséget.
+
+    2. Lépés: CPU és Lemez teljesítmény figyelése
+
+        A Teljesítményfigyelő widgetben kattints a "Select counters" (Számlálók kiválasztása) lehetőségre.
+
+        Válaszd ki a "Processor" (% Processor Time) és a "LogicalDisk" (% Disk Time) számlálókat a CPU és lemez teljesítményének monitorozásához.
+
+        Kattints a "Add" (Hozzáad) gombra a számlálók widgethez való hozzáadásához.
+
+    3. Lépés: Munkaterület mentése
+
+        A Windows Admin Center tetején található menüben válaszd a "Workspaces" (Munkaterületek) opciót.
+
+        Adjon meg egy nevet a munkaterületnek, és kattints a "Save" (Mentés) gombra.
+
+3. feladat: További szolgáltatások tesztelése
+
+    1. Lépés: RDP (Távoli Asztal) használata
+
+        Válaszd ki a szervert, amelyre távoli asztali kapcsolatot szeretnél létesíteni.
+
+        Kattints a "Connect" (Kapcsolódás) lehetőségre, majd válaszd a "Remote Desktop" (Távoli asztal) opciót.
+
+        A felugró ablakban kövesd az utasításokat az RDP kapcsolat létesítéséhez.
+
+    2. Lépés: Távoli PowerShell használata
+
+        Ugyanazon a szervert választva kattints a "More" (Több) gombra, majd válaszd a "PowerShell" lehetőséget.
+
+        Egy új ablakban egy PowerShell munkamenet nyílik meg, ahol parancsokat futtathatsz a távoli szerveren.
+
+    3. Lépés: Fájlszolgáltatások tesztelése
+
+        A szervert kiválasztva navigálj a "Files" (Fájlok) fülre.
+
+        Itt megtekintheted a szerver fájlrendszerét, létrehozhatsz új mappákat, törölhetsz fájlokat, vagy másolhatsz adatokat.
