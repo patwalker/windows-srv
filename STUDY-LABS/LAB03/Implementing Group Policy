@@ -11,7 +11,7 @@ A vállalat kiemelt figyelmet fordít az információs technológiai infrastrukt
 Ebben az összefüggésben a vállalat IT osztálya felismerte a céges eszközök konfigurációjának
 és biztonsági beállításainak központi menedzselésének szükségességét.
 
-Jelszó Biztonsági Irányelvek GPO Létrehozása és Alkalmazása
+1. feladat Jelszó Biztonsági Irányelvek GPO Létrehozása és Alkalmazása
 
     1. Lépés: GPO Létrehozása
 
@@ -75,7 +75,7 @@ Jelszó Biztonsági Irányelvek GPO Létrehozása és Alkalmazása
 
         Mivel a GPO-t már hozzárendeltük a "Users" OU-hoz a létrehozáskor, automatikusan alkalmazva lesz az OU-ban található összes felhasználóra.
 
-Központi házirend tároló létrehozása
+2. feladat Központi házirend tároló létrehozása
 
     1. Lépés: ADMX és ADML Fájlok Letöltése
 
@@ -117,3 +117,65 @@ Központi házirend tároló létrehozása
 
         A változtatások érvénybe lépéséhez lehet, hogy szükséges lesz a csoportirányelv-frissítés futtatása a célrendszereken vagy
         a felhasználóknak újra kell indítaniuk a számítógépeiket.
+
+3. feladat A CA Tanúsítványának Exportálása
+
+    1. Lépés: Először exportáld a CA tanúsítványát, hogy aztán azt terjeszthetővé tedd a domainen belüli összes gépre
+
+        Nyisd meg a Certification Authority konzolt a CA szerveren.
+
+        Kattints jobb gombbal a tanúsítványhatóság nevére (pl. Fusimisi Technologies CA),
+        és válaszd a Properties lehetőséget.
+
+        A General fülön kattints a View Certificate gombra.
+
+        A tanúsítvány megjelenítésekor válaszd a Details fület, majd kattints a Copy to File... gombra,
+        hogy elindítsd a tanúsítvány exportáló varázslót.
+
+        Kövesd a varázsló utasításait az exportáláshoz, válaszd a Base-64 encoded X.509 (.CER) formátumot.
+
+        Mentsd a tanúsítványt egy megosztott helyre vagy egy olyan helyre,
+        amely hozzáférhető a domain controller számára.
+
+    2. Lépés: A CA Tanúsítványának Terjesztése a Group Policy Segítségével
+
+        Nyisd meg a Group Policy Management konzolt (GPMC.msc) egy domain controlleren vagy egy olyan gépen,
+        ahol telepítve van az RSAT (Remote Server Administration Tools).
+
+        Bontsd ki a domain struktúrát, kattints jobb gombbal a domain nevére (pl. fusimisi.local),
+        és válaszd a Create a GPO in this domain, and Link it here... opciót.
+
+        Adj nevet az új GPO-nak, például "CA Certificate Distribution Policy".
+
+        Kattints jobb gombbal az újonnan létrehozott GPO-ra, és válaszd a Edit opciót.
+
+        Navigálj a Computer Configuration -> Policies -> Windows Settings -> Security Settings ->
+        Public Key Policies -> Trusted Root Certification Authorities útvonalon belül a Group Policy Management Editor-ban.
+        
+        Kattints jobb gombbal a Trusted Root Certification Authorities mappára, válaszd a Import lehetőséget,
+        és kövesd a varázsló utasításait a korábban exportált CA tanúsítvány importálásához.
+
+    3. Lépés: Automatikus Tanúsítvány-beiratkozás Beállítása
+
+        A Group Policy Management Editor-ban maradva, navigálj a Computer Configuration -> Policies ->
+        Windows Settings -> Security Settings -> Public Key Policies útvonalra.
+
+        Kattints duplán a Certificate Services Client - Auto-Enrollment beállításra.
+
+        Az ablakban állítsd az Configuration Model-t Enabled-re.
+
+        Ellenőrizd a Renew expired certificates, update pending certificates, and remove revoked certificates
+        és a Update certificates that use certificate templates beállításokat.
+
+        Kattints az OK gombra a változtatások mentéséhez.
+
+    4. Lépés: A GPO Alkalmazása és Tesztelése
+
+        Győződj meg arról, hogy a GPO-t a megfelelő számítógép- vagy felhasználói OU-khoz rendelted hozzá.
+
+        A változtatások érvénybe léptetéséhez futtasd a gpupdate /force parancsot egy parancssorban vagy várj,
+        amíg a Group Policy automatikusan frissül (általában minden órában).
+
+        Tesztelés: Ellenőrizd egy cél számítógépen, hogy a CA tanúsítvány megjelent-e a
+        Trusted Root Certification Authorities tárolóban a certmgr.msc használatával, és ellenőrizd,
+        hogy az automatikus beiratkozás működik-e, például új tanúsítvány kérésekor.
