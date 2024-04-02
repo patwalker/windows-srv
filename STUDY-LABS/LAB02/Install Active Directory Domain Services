@@ -160,3 +160,46 @@ Te mint a szerverekért felelős szakértő, a te feladatod lesz az AD DS telep�
         
         Nyisd meg egy webböngészőben a CA web enrollment oldalt a http://[szerver neve]/certsrv címen,
         ahol [szerver neve] a CA-t futtató szerver neve vagy IP-címe. Ellenőrizd, hogy az oldal elérhető-e és működik-e.
+
+3. feladat Az Active Directory Domain Services Szerepkör Telepítése Powershell-en keresztül
+
+    1. Lépés: Windows PowerShell indítása
+
+        Az Active Directory Domain Services szerepkör és a domain controller szükséges funkcióinak telepítéséhez
+        használd az Install-WindowsFeature cmdlet-et.
+
+        Adja hozzá az -IncludeManagementTools kapcsolót, ha szeretnéd telepíteni az AD DS kezelő eszközöket is,
+        amelyek segítenek a szerver kezelésében a telepítés után.
+
+        Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+
+    2. Lépés: AD DS telepítése utáni konfiguráció:
+
+        A szerepkör telepítése után a következő lépés a domain controller konfigurálása a Install-ADDSForest,
+        Install-ADDSDomain, vagy Install-ADDSDomainController cmdlet-ek egyikével, attól függően,
+        hogy új erdőt hozol létre, új domaint egy létező erdőben, vagy egy új domain controllert egy létező domainben.
+
+        Mivel ez egy másodlagos DC lesz egy már létező domainben, az Install-ADDSDomainController cmdlet-et kell használnod.
+
+        Install-ADDSDomainController `
+            -DomainName "fusimisi.local" `
+            -InstallDns:$true `
+            -LogPath "C:\Windows\NTDS" `
+            -DatabasePath "C:\Windows\NTDS" `
+            -SysvolPath "C:\Windows\SYSVOL" `
+            -NoGlobalCatalog:$false `
+            -SiteName "Default-First-Site-Name" `
+            -NoRebootOnCompletion:$false `
+            -Force:$true
+
+        Fontos: Módosítsd a -DomainName, -LogPath, -DatabasePath, -SysvolPath, és -SiteName
+        paramétereket szükség szerint, hogy megfeleljenek a környezetednek.
+        
+        A -NoRebootOnCompletion:$false opció azt jelenti, hogy a szerver automatikusan újraindul a telepítés befejezése után.
+
+    3. Lépés: Ellenőrzés
+
+        A szerver újraindítása után ellenőrizd, hogy a domain controller sikeresen csatlakozott-e a domainhez,
+        és megfelelően működik. Ezt megteheted többek között a Get-ADDomainController cmdlet segítségével,
+        amely információkat ad vissza az összes elérhető domain controllerről, vagy az Test-ComputerSecureChannel cmdlet-tel,
+        amely ellenőrzi a biztonságos csatorna állapotát a domainnel.
