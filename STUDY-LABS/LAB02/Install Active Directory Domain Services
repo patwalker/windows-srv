@@ -190,7 +190,8 @@ Te mint a szerverekért felelős szakértő, a te feladatod lesz az AD DS telep�
             -NoGlobalCatalog:$false `
             -SiteName "Default-First-Site-Name" `
             -NoRebootOnCompletion:$false `
-            -Force:$true
+            -Force:$true `
+            -Credential (Get-Credential)
 
         Fontos: Módosítsd a -DomainName, -LogPath, -DatabasePath, -SysvolPath, és -SiteName
         paramétereket szükség szerint, hogy megfeleljenek a környezetednek.
