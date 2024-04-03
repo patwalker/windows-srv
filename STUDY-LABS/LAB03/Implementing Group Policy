@@ -15,7 +15,7 @@ Ebben az összefüggésben a vállalat IT osztálya felismerte a céges eszköz�
 
     1. Lépés: GPO Létrehozása
 
-        Nyisd meg az "Active Directory Users and Computers" (ADUC) eszközt.
+        Nyisd meg a Group Policy Management Console-t (GPMC).
 
         Kattints a domain nevére (pl. fusimisi.local), keresd meg és kattints jobb gombbal a "Computers" OU-ra.
 
