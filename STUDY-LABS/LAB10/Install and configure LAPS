@@ -1,0 +1,195 @@
+Ebben a laborgyakorlatban megismerkedsz a LAPS szolgáltatással.
+
+Labor megoldásához szükséges idő: 60 perc
+
+Labor scenario: 
+
+Jelenleg ugyanaz a helyi adminisztrátori fiókjelszó van használva az összes szerveren és munkaállomáson
+a Fusimisi Technologies-nál. Ennek a problémának a megoldására be fogod állítani és telepíteni a LAPS-t 
+(Local Administrator Password Solution - Helyi Adminisztrátori Jelszó Megoldás).
+
+1. feladat LAPS Telepítőfájl Letöltése és Megosztása az FS1-en
+
+    1. Lépés: LAPS Telepítőfájl Letöltése
+
+        Töltsük le a LAPS.x64.msi telepítőfájlt a https://www.microsoft.com/en-us/download/details.aspx?id=46899 oldalról.
+
+        Hozzunk létre egy új mappát az FS1 szerveren, nevezzük el pl. "software"-nek.
+        
+        Kattintsunk jobb gombbal a mappára, válasszuk a "Properties" (Tulajdonságok) menüpontot,
+        majd a "Sharing" (Megosztás) fület, és állítsuk be a megosztást.
+
+        Jogosultságok Beállítása a Mappán:
+
+        A "Properties" (Tulajdonságok) ablakban váltson a "Security" (Biztonság) fülre.
+        
+        Távolítsa el az "Everyone" csoportot.
+        
+        Adjon hozzá "Domain Computers" csoportot, és állítson be "Read" (Olvasás) jogosultságot.
+        
+        Adjon hozzá "Domain Users" csoportot, és állítson be "Read", "List Content", és "Read & Execute" (Olvasás és Végrehajtás) jogosultságokat.
+
+        LAPS Telepítőfájl Másolása a Megosztott Mappába:
+        
+        Másoljuk a LAPS.x64.msi fájlt a korábban létrehozott "software" mappába a megosztáson belül.
+
+    2. lépés: LAPS Telepítése a DC1 Szerverre
+
+        Telepítés a DC1 Szerveren:
+        
+        Nyissuk meg a PowerShellt mint adminisztrátor a DC1-en.
+        
+        Futtassuk a következő parancsot a LAPS telepítéséhez, beleértve minden management toolt:
+
+        cmd vagy powershell
+
+        Msiexec /i \\FS1\software\LAPS.x64.msi /quiet
+
+    3. lépés: GPO Létrehozása és Konfigurálása a LAPS Kliens Telepítéséhez
+
+        GPO Létrehozása:
+        
+        Nyissuk meg a Group Policy Management konzolt a DC1-en.
+        
+        Navigáljunk a "Forest: YourDomainName, Domains, YourDomainName" útvonalon,
+        keresse meg és kattintson jobb gombbal a "Computers" OU-ra,
+        válassza a "Create a GPO in this domain, and Link it here..." opciót.
+
+        Nevezzük el a GPO-t, például "LAPS Deployment".
+
+        GPO Konfigurálása a LAPS Kliens Telepítéséhez:
+        
+        Kattintson jobb gombbal az újonnan létrehozott "LAPS Deployment" GPO-ra,
+        és válassza a "Edit" (Szerkesztés) lehetőséget.
+
+        Böngésszen a "Computer Configuration -> Policies -> Software Settings -> Software installation" útvonalon.
+
+        Kattintson jobb gombbal a "Software installation"-ra, válassza a "New -> Package" opciót.
+
+        Tallózza be a LAPS.x64.msi telepítőfájlt a központi file share "software" mappájában,
+        és válassza az "Assigned" opciót.
+
+        A GPO beállításai automatikusan alkalmazásra kerülnek a célgépeken a következő Group Policy frissítés
+        vagy újraindítás során.
+
+    4. lépés: Ellenőrzés
+
+        GPO Alkalmazásának Ellenőrzése:
+        
+        A GPO alkalmazásának ellenőrzéséhez vagy kényszerítéséhez használhatjuk a gpupdate /force parancsot a kliens gépeken,
+        vagy egyszerűen újraindíthatjuk őket.
+        
+        Ellenőrizzük, hogy a LAPS kliens sikeresen telepítve van-e a célkliens gépekre.
+
+2. feladat AD schema bővítése
+
+    Miután a GPO és a LAPS telepítése megtörtént a DC1-en és a kliensgépeken a Fusimisi Technologies-nál,
+    a következő lépés az Active Directory (AD) séma kiterjesztése.
+    Ennek a folyamatnak a részeként két specifikus attribútumot adunk hozzá az AD sémához,
+    amelyek lehetővé teszik a LAPS által kezelt adminisztrátori jelszavak tárolását és azok lejárati idejének
+    nyomon követését.
+    
+    A séma kiterjesztéséhez a következő PowerShell parancsokat kell végrehajtani, adminisztrátori jogokkal:
+
+        Import-module AdmPwd.PS
+        Update-AdmPwdADSchema
+
+    Magyarázat:
+
+        Ezeket a parancsokat követően az Active Directory séma két új attribútummal bővül:
+
+        ms-Mcs-AdmPwd: Ez az attribútum tárolja a számítógép adminisztrátori jelszavát. A LAPS által generált és kezelt jelszavak itt kerülnek tárolásra, minden egyes számítógép számára egyedi és biztonságos jelszóval.
+
+        ms-Mcs-AdmPwdExpirationTime: Ez az attribútum tárolja a jelszó lejárati idejének időbélyegét. Ez lehetővé teszi a rendszer számára, hogy nyomon kövesse, mikor kell automatikusan frissíteni a helyi adminisztrátori jelszót, így biztosítva, hogy a jelszavak rendszeresen megújuljanak és ne maradjanak túl hosszú ideig változatlanok.
+
+        Ahhoz, hogy ezek az új attribútumok elérhetővé váljanak, szükséges az Active Directory séma kiterjesztése.
+    
+        A Update-AdmPwdADSchema parancs futtatásával az AD séma automatikusan frissül, így integrálva a LAPS által szükséges
+        séma kiegészítéseket. Ez a lépés kulcsfontosságú a LAPS biztonságos és hatékony működéséhez, mivel lehetővé teszi
+        az adminisztrátori jelszavak centralizált, automatizált kezelését, javítva ezzel a szervezeti biztonságot és
+        csökkentve a jelszavakkal kapcsolatos kockázatokat.
+
+3. feladat Jogosultságok beállítasa
+
+    1. lépés: Számítógépek Jogosultságainak Beállítása
+
+        Számítógépek Jogosultságainak Beállítása az OU-ra:
+
+        Futtassa a következő PowerShell parancsot adminisztrátori jogokkal,
+        hogy beállítsa a szükséges jogosultságokat a "Computers" OU számítógépeire.
+
+        Powershell
+
+        Set-AdmPwdComputerSelfPermission -OrgUnit "Computers"
+
+        Ez a parancs engedélyezi a számítógépek számára, hogy frissíthessék saját helyi adminisztrátori jelszavukat
+        az Active Directory-ban, valamint beállíthassák a jelszavak lejárati idejét.
+
+    2. lépés: Adminok Jogosultságainak Beállítása
+
+        Adminok Jogosultságainak Beállítása a Jelszavak Megtekintéséhez:
+
+        A következő parancsot használva adjon jogosultságot a "fusimisi-helpdesk" csoportnak
+        (vagy bármely más megadott csoportnak), hogy megtekinthessék a helyi adminisztrátori jelszavakat.
+
+        Powershell
+
+        Set-AdmPwdReadPasswordPermission -Identity "Computers" -AllowedPrincipals "fusimisi-helpdesk"
+
+        Ezzel a parancsal a megadott csoport tagjai képesek lesznek megtekinteni a "Computers" OU-ban
+        található számítógépek helyi adminisztrátori jelszavait.
+
+    3. lépés: Ellenőrzés
+
+        Jogosultságok Ellenőrzése
+
+        Az alábbi parancs futtatásával ellenőrizhetjük, hogy a megfelelő jogosultságok sikeresen beállításra kerültek-e.
+
+        Powershell
+
+        Find-AdmPwdExtendedRights -Identity "Computers"
+
+        Ez a parancs listázza azokat a felhasználókat és csoportokat,
+        akik rendelkeznek kiterjesztett jogosultságokkal az adott OU-ra vonatkozóan,
+        beleértve a helyi adminisztrátori jelszavak megtekintésének jogosultságát is.
+
+4. feladat GPO létrehozása
+
+    1. lépés: Központi GPO tárhely konfigurálása:
+
+        Amennyiben van konfigurálva Központi GPO tárhely (Central Store), 
+        először másolja át az AdmPwd.admx és AdmPwd.adml fájlokat a DC1-en c:\Windows\PolicyDefinitions mappából
+        a központi tárolóba. 
+        
+        Például: \\fusimisi.local\SYSVOL\Policies\PolicyDefinitions mappába
+
+    2. lépés: Új GPO Létrehozása:
+
+        Kattintson jobb gombbal a "Computers" Szervezeti Egységre (OU) a Group Policy Management-ben,
+        és válassza az "Új GPO létrehozása ebben a tartományban, és linkelje ide..." opciót.
+
+        Nevezze el a GPO-t, például "computers-laps"-nak.
+
+    3. lépés: A GPO Konfigurálása
+
+        Nyissa meg a létrehozott GPO-t a Group Policy Management Editor-ban.
+
+        Navigáljon a Computer Configuration -> Policies -> Administrative Templates -> LAPS útvonalhoz.
+
+        Engedélyezze az "Enable local admin password management" opciót. 
+        
+        (Ez lehetővé teszi a helyi adminisztrátori jelszavak automatikus kezelését a LAPS által.)
+        
+        Menjen a "Password Settings" beállításhoz, kattintson az "Enable" gombra,
+        majd konfigurálja a jelszó komplexitásának beállításait.
+        
+        (A jelszó komplexitását tetszőlegesen állíthatja be, figyelembe véve a szervezeti biztonsági irányelveket.)
+
+
+    4. lépés: LAPS Jelszó Ellenőrzése
+
+        Nyissa meg az Active Directory Users and Computers (ADUC) eszközt.
+
+        Keresse meg és kattintson jobb gombbal a megvizsgálni kívánt számítógépre az "Attributes" (Attribútumok) fülön.
+        
+        Keressen az ms-Mcs-AdmPwd attribútumra, ami tartalmazza a generált helyi adminisztrátori jelszót.

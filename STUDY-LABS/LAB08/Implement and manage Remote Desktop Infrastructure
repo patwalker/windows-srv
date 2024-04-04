@@ -90,3 +90,47 @@ az alkalmazást anélkül, hogy teljes asztali környezetet kellene használniuk
         írjuk be az RDS1 Web Access URL-jét (pl. http://rds1.fusimisi.local/RDWeb).
         
         Próbáljunk meg bejelentkezni és elérni a publikált alkalmazásokat vagy asztalokat
+
+2. feladat: RemoteApp Létrehozása és Jogosultságok Beállítása
+
+    1. Lépés: Alkalmazás Publikálása a RemoteApp Manager-ben
+
+        Nyissuk meg a Remote Desktop Services főoldalát a Szerverkezelőben (Server Manager).
+
+        Válasszuk a "RemoteApp Programs" menüpontot az "Overview" részen belül,
+        amely megjelenik a Remote Desktop Services szekcióban.
+
+        Kattintsunk a "Publish RemoteApp Programs" lehetőségre.
+
+        A megjelenő listából válasszuk ki a Számológép alkalmazást (Calculator).
+        Ha az alkalmazás nem jelenik meg a listában, manuálisan is hozzáadhatjuk a "Browse" gomb segítségével,
+        kiválasztva az alkalmazás futtatható fájlját.
+
+        Kattintsunk a "Publish" gombra az alkalmazás publikálásához.
+
+    2. Lépés: Jogosultságok Konfigurálása
+
+        A "RemoteApp Programs" listában keresse meg a most publikált Számológép alkalmazást.
+
+        Kattintsunk rá jobb gombbal, és válasszuk a "Properties" opciót.
+
+        Az "User Assignment" (Felhasználói hozzárendelés) fül alatt adjuk hozzá a "bud-engineers" AD csoportot.
+
+        A "bud-engineers" csoport kiválasztásával korlátozzuk az alkalmazáshoz való hozzáférést
+        kizárólag ennek a csoportnak a tagjaira.
+        
+        Megerősítés után zárjuk be az ablakot a "OK" gombbal.
+
+    3. Lépés: RDS Környezet Frissítése és Ellenőrzése
+
+        Győződjünk meg róla, hogy az RDS konfiguráció frissült az újonnan publikált RemoteApp
+        és a beállított hozzáférési szabályok alapján.
+
+        Az RDS1 szerveren, használjuk a "RD Web Access" szolgáltatást a változások ellenőrzésére.
+
+        Nyissuk meg a webböngészőt, és írjuk be az RDS1 Web Access URL-jét (pl. http://rds1.fusimisi.local/RDWeb).
+
+        Jelentkezzünk be egy olyan felhasználóval, aki tagja a "bud-engineers" csoportnak, és ellenőrizzük,
+        hogy a Számológép alkalmazás elérhető-e.
+        
+        Teszteljük az alkalmazást, hogy biztosítsuk a hozzáférési jogosultságok helyes beállítását.
