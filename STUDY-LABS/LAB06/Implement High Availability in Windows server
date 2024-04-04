@@ -63,6 +63,8 @@ Emellett felelős vagy a kudarcálló klaszter konfigurációjának tervezésé�
 
         Nyisd meg a PowerShellt rendszergazdaként.
 
+        Install-WindowsFeature -Name FS-iSCSITarget-Server -IncludeManagementTools
+
         Új iSCSI Virtuális Lemezek Létrehozása
         
         Futassuk a következő parancsokat az új iSCSI virtuális lemezek létrehozásához a C:\storage mappában:
