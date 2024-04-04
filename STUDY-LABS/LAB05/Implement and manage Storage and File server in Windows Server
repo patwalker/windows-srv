@@ -135,7 +135,7 @@ amelyeket a magas rendelkezésre állásnak meg kell felelnie.
 
         A "Select server roles" oldalon nincs szükség új szerepkör kiválasztására a deduplikációhoz, így haladj tovább a "Next" gombbal.
 
-        A "Features" oldalon görgess le a "Data Deduplication" opcióig, jelöld be, majd kattints a "Next" gombra.
+        A "Roles" oldalon görgess le a "Data Deduplication" opcióig, jelöld be, majd kattints a "Next" gombra.
 
         A "Confirm installation selections" oldalon ellenőrizd a kiválasztásokat, majd kattints a "Install" gombra.
         A telepítés után kattints a "Close" gombra.
@@ -179,7 +179,7 @@ amelyeket a magas rendelkezésre állásnak meg kell felelnie.
 
         A varázslóban válaszd a "Role-based or feature-based installation" lehetőséget, majd válaszd ki a célszervert.
 
-        Haladj tovább a "Next" gombbal a "Features" oldalig, ahol be kell jelölnöd az "iSCSI Target Server" opciót.
+        Haladj tovább a "Next" gombbal a "Roles" oldalig, ahol be kell jelölnöd az "iSCSI Target Server" opciót.
         
         Kattints a "Next" gombra, majd a "Install" gombra.
 
