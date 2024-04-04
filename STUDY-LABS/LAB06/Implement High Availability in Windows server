@@ -51,7 +51,7 @@ Emellett felelős vagy a kudarcálló klaszter konfigurációjának tervezésé�
         Fontos: A laboratórium a DC1-et használja, amely egy Active Directory Domain Services (AD DS) domain vezérlőként funkcionál,
         hogy megosztott iSCSI tárolót biztosítson egy Windows Server alapú klaszter számára.
         Ez semmilyen módon nem képvisel ajánlott konfigurációt, csupán a labor konfigurációjának egyszerűsítése és a
-        laboratóriumi virtuális gépek számának minimalizálása végett történik. Bármilyen termelési környezetben a domain vezérlőke
+        laboratóriumi virtuális gépek számának minimalizálása végett történik. Bármilyen éles környezetben a domain vezérlőke
         nem szabad használni a kudarcálló klaszterek számára megosztott tárolóként.
         Ehelyett az ilyen tárolókat magas rendelkezésre állású infrastruktúrán kell hostolni.
     
