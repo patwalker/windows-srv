@@ -87,33 +87,6 @@ egyik részlege – rendelkezzen saját DNS szerverrel a tesztelési területen.
 
         Install-WindowsFeature DHCP -IncludeManagementTools
 
-    2. lépés 
-    
-        DHCP Scope Létrehozása:
-
-        DHCP Szerver Post-Install Konfigurációja
-
-        Futtasd a dhcp post-install parancsot a PowerShellben, hogy befejezd a DHCP szerver konfigurálását.
-
-        DHCP Scope Létrehozása
-
-        Használd a következő PowerShell parancsokat a DHCP scope beállításához az előző lépéseknek megfelelően:
-
-            Add-DhcpServerv4Scope -Name "PrimaryScope" -StartRange 192.168.1.51 -EndRange 192.168.1.254 -SubnetMask 255.255.255.0 -State Active
-
-            Add-DhcpServerv4ExclusionRange -ScopeId 192.168.1.0 -StartRange 192.168.1.1 -EndRange 192.168.1.50
-        
-            Set-DhcpServerv4OptionValue -DnsServer 192.168.1.100 -Router 192.168.1.1 -ScopeId 192.168.1.0
-
-        Itt a StartRange és EndRange határozza meg a kiosztható IP címek tartományát, az ExclusionRange adja meg a kizárt címeket,
-        a DnsServer az DNS szerver címét, a Router pedig az alapértelmezett átjáró címét.
-
-        Bérleti Idő Beállítása
-
-        Állítsd be a bérleti időt 1 napra:
-
-            Set-DhcpServerv4Scope -ScopeId 192.168.1.0 -LeaseDuration 1.00:00:00
-
 3. feladat Failover Kapcsolat Létrehozása
 
     1. lépés (GUI)
